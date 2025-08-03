@@ -1,0 +1,11 @@
+{% extends "admin/base.html" %}
+
+{% block title %}BISK Admin{% endblock %}
+
+{% block branding %}
+  <div id="site-name" style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
+    <a href="{% url 'admin:index' %}" style="font-size: 20px; font-weight: bold;">BISK Automation</a>
+{#    <button class="theme-toggle" title="Toggle theme"#}
+{#      style="margin-left: auto; margin-right: 1rem; background: none; border: none; font-size: 20px; cursor: pointer;">☾</button>#}
+  </div>
+{% endblock %}

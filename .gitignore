@@ -1,0 +1,36 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+*.pyo
+*.pyd
+
+# Django
+#*.sqlite3
+*.log
+
+# Environments
+.venv/
+.env
+.env.*
+
+# VSCode / PyCharm
+.idea/
+.vscode/
+
+# macOS
+.DS_Store
+
+# Byte-compiled
+*.pyc
+
+# Coverage / Testing
+htmlcov/
+.coverage
+.tox/
+
+# Migrations (optional to ignore if you auto-gen)
+# core/migrations/__pycache__/
+
+# Node/npm (if you use later)
+node_modules/
