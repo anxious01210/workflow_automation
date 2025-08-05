@@ -6,6 +6,16 @@
     <script src="https://unpkg.com/htmx.org@1.9.2"></script>
     <script>
         document.addEventListener("DOMContentLoaded", function () {
+            try {
+                const savedConfigs = document.getElementById('step-configs').value;
+                if (savedConfigs) {
+                    allConfigs = JSON.parse(savedConfigs);
+                    console.log("Restored allConfigs:", allConfigs);
+                }
+            } catch (err) {
+                console.warn("Failed to parse step-configs:", err);
+            }
+
             const toggleButton = document.getElementById("theme-toggle");
             if (!toggleButton) return;
 
@@ -28,6 +38,17 @@
             });
 
             applyThemeMode();
+
+            // 🧩 3. Modal open logic
+            document.getElementById('workflow-canvas').addEventListener('click', function (e) {
+                const li = e.target.closest('li');
+                if (li && li.dataset.type && li.dataset.stepId) {
+                    const stepType = li.dataset.type;
+                    const stepId = li.dataset.stepId;
+                    openStepModal(stepType, stepId);
+                }
+            });
+
         });
     </script>
 
@@ -62,15 +83,15 @@
                 {% csrf_token %}
                 <ul id="workflow-canvas" class="dropzone">
                     {% for step in workflow.steps.all %}
-                        <li data-type="{{ step.step_type }}">
+                        <li data-type="{{ step.step_type }}" data-step-id="{{ step.id }}">
                             <span class="step-label">{{ step.name }}</span>
                             <button class="delete-step" title="Remove this step">✖</button>
                         </li>
-
                     {% endfor %}
                 </ul>
+
                 <input type="hidden" name="step_data" id="step-data">
-                <input type="hidden" name="step_configs" id="step-configs">
+                <input type="hidden" name="step_configs" id="step-configs" value='{{ step_configs_json|safe }}'>
                 <button type="submit">💾 Save Workflow</button>
             </form>
         </div>
@@ -195,7 +216,9 @@
             stepCounters[type] += 1;
 
             const li = document.createElement('li');
-            li.dataset.type = type;  // ✅ important
+            li.dataset.type = type;
+            {#li.dataset.stepId = step.id; // ✅ ADD THIS#}
+            li.dataset.stepId = `temp-${Date.now()}-${Math.floor(Math.random() * 1000)}`;  // ✅ important
             li.innerHTML = `
         <span class="step-label">${type.charAt(0).toUpperCase() + type.slice(1)} Step ${stepCounters[type]}</span>
         <button class="delete-step" title="Remove this step">✖</button>
@@ -215,13 +238,19 @@
         // Sortable.js
         new Sortable(dropzone, {
             animation: 150,
-            ghostClass: 'blue-background-class'
+            ghostClass: 'blue-background-class',
+            onEnd: () => {
+                // Update all <li> with new data-index
+                document.querySelectorAll('#workflow-canvas li').forEach((li, i) => {
+                    li.dataset.index = i;
+                });
+            }
         });
         document.getElementById('modal-form').addEventListener('submit', function (e) {
             e.preventDefault();
 
             const modal = document.getElementById('step-config-modal');
-            const index = parseInt(modal.dataset.index);
+            const stepId = modal.dataset.stepId;
             const stepType = modal.dataset.type;
 
             const formData = new FormData(e.target);
@@ -246,35 +275,51 @@
             }
 
             // ✅ Save config to the global variable
-            allConfigs[index] = config;
+            allConfigs[stepId] = config;
 
             closeStepModal();
         });
 
 
         document.addEventListener('DOMContentLoaded', function () {
+            // 🔁 Restore allConfigs
+            try {
+                const savedConfigs = document.getElementById('step-configs').value;
+                if (savedConfigs) {
+                    allConfigs = JSON.parse(savedConfigs);
+                    console.log("Restored allConfigs:", allConfigs);
+                }
+            } catch (err) {
+                console.warn("Failed to parse step-configs:", err);
+            }
+
             document.getElementById('workflow-canvas').addEventListener('click', function (e) {
                 const li = e.target.closest('li');
                 if (li && li.dataset.type) {
                     const stepType = li.dataset.type;
-                    const stepIndex = [...li.parentElement.children].indexOf(li); // 0-based index
-                    openStepModal(stepType, stepIndex);
+                    const stepId = li.dataset.stepId;
+                    openStepModal(stepType, stepId);
                 }
             });
+            // ✅ Reset data-index on each li based on order in DOM
+            document.querySelectorAll('#workflow-canvas li').forEach((li, i) => {
+                li.dataset.index = i;
+            });
+
         });
 
-        function openStepModal(stepType, stepIndex) {
+
+        function openStepModal(stepType, stepId) {
             const modal = document.getElementById('step-config-modal');
             const body = document.getElementById('modal-body');
             document.getElementById('modal-title').textContent = `Configure ${stepType} step`;
 
-            const config = allConfigs[stepIndex] || {};  // ✅ load config
+            const config = allConfigs[stepId] || {};  // ✅ load config
 
             const fields = {
                 form: `
           <label>Title: <input name="title" required value="${config.title || ''}"></label><br><br>
           <div id="field-configs"></div>
-{#          <button type="button" onclick="addFieldRow()">➕ Add Field</button>#}
         `,
                 email: `
           <label>Subject: <input name="subject" required value="${config.subject || ''}"></label><br>
@@ -287,6 +332,7 @@
             };
 
             body.innerHTML = fields[stepType] || `<p>No config available for this type.</p>`;
+
 
             // 🔁 Load form fields if it's a form step
             if (stepType === 'form') {
@@ -301,9 +347,11 @@
             }
 
 
-            modal.dataset.index = stepIndex;
+            modal.dataset.stepId = stepId;
             modal.dataset.type = stepType;
             modal.style.display = 'block';
+
+            console.log("Modal opened with config:", config);
         }
 
 
@@ -364,10 +412,13 @@
             document.querySelectorAll('#workflow-canvas li').forEach((li, index) => {
                 const label = li.querySelector('.step-label')?.innerText || `Step ${index + 1}`;
                 steps.push({
+                    id: li.dataset.stepId,
                     order: index + 1,
                     type: li.dataset.type,
                     name: label
                 });
+                document.getElementById('step-data').value = JSON.stringify(steps);
+                document.getElementById('step-configs').value = JSON.stringify(allConfigs);  // ✅ THIS LINE
             });
 
             // 🔍 Optional debugging

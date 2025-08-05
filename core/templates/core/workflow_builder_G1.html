@@ -62,45 +62,14 @@
 
     <style>
 
-        :root {
-            {#--text-color: #000;#}
-            {#--text-color: #000;#}
-            {#--bg-color: #f9f9f9;#}
-            --text-color: #f9f9f9;
-            --bg-color: #333;
-            --border-color: #ccc;
-            --btn-bg: #eee;
-            --btn-text: #000;
-            --btn-bg-hover: #ddd;
-        }
 
-        /* Dark mode */
-        html[data-theme="dark"] {
-            --text-color: #f9f9f9;
-            --bg-color: #333;
-            --border-color: #666;
-            --btn-bg: #3b3b3b;
-            --btn-text: #fff;
-            --btn-bg-hover: #444;
-        }
-
-        /* Light mode */
-        html[data-theme="light"] {
-            --text-color: #111;
-            --bg-color: #f9f9f9;
-            --border-color: #ccc;
-            --btn-bg: #e9e9e9;
-            --btn-text: #000;
-            --btn-bg-hover: #ddd;
-        }
 
         /* === System theme fallback === */
         html:not([data-theme]) .draggable,
         html:not([data-theme]) .dropzone li {
-        {#background-color: #e8e8e8; background-color: #f0f0f0;#}
+            background-color: #e8e8e8;
             border: 1px solid #ccc;
-            /*color: #000; color: #000 !important;  🔴 Force black */
-            font-weight: bold;
+            color: #000;
         }
 
         html:not([data-theme]) .step-label {
@@ -133,7 +102,6 @@
             cursor: grab;
             font-weight: bold;
             border-radius: 4px;
-            color: var(--text-color);
         }
 
         .step-label {
