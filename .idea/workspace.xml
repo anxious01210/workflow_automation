@@ -5,9 +5,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2c84581f-bbd6-49c2-b423-8cff6e136ee5" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/static/core/workflow_builder.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/core/workflow_builder.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/core/templates/core/workflow_builder.html" beforeDir="false" afterPath="$PROJECT_DIR$/core/templates/core/workflow_builder.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/db.sqlite3" beforeDir="false" afterPath="$PROJECT_DIR$/db.sqlite3" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/workflow_automation/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/workflow_automation/settings.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/workflow_automation/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/workflow_automation/urls.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -16,6 +20,14 @@
   </component>
   <component name="DjangoConsoleOptions" custom-start-script="import sys; print('Python %s on %s' % (sys.version, sys.platform))&#10;import django; print('Django %s' % django.get_version())&#10;sys.path.extend([WORKING_DIR_AND_PYTHON_PATHS])&#10;if 'setup' in dir(django): django.setup()&#10;import django_manage_shell; django_manage_shell.run(PROJECT_ROOT)">
     <option name="myCustomStartScript" value="import sys; print('Python %s on %s' % (sys.version, sys.platform))&#10;import django; print('Django %s' % django.get_version())&#10;sys.path.extend([WORKING_DIR_AND_PYTHON_PATHS])&#10;if 'setup' in dir(django): django.setup()&#10;import django_manage_shell; django_manage_shell.run(PROJECT_ROOT)" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="CSS File" />
+        <option value="JavaScript File" />
+      </list>
+    </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -39,9 +51,11 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
     "RunOnceActivity.git.unshallow": "true",
+    "RunOnceActivity.pycharm.django.structure.promotion.once.per.project": "true",
     "git-widget-placeholder": "main",
     "junie.onboarding.icon.badge.shown": "true",
     "last_opened_file_path": "/home/rio/PycharmProjects/workflow_automation/core/templates/core",
+    "list.type.of.created.stylesheet": "CSS",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -63,6 +77,9 @@
       <recent name="$PROJECT_DIR$/core" />
       <recent name="$PROJECT_DIR$/templates" />
       <recent name="$PROJECT_DIR$/workflow_automation" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/static" />
     </key>
   </component>
   <component name="RunManager">
@@ -110,7 +127,7 @@
       <workItem from="1754230684939" duration="8192000" />
       <workItem from="1754243468262" duration="10548000" />
       <workItem from="1754336328772" duration="36000" />
-      <workItem from="1754403666322" duration="9283000" />
+      <workItem from="1754403666322" duration="12411000" />
     </task>
     <servers />
   </component>
