@@ -1,11 +1,13 @@
 # core/views.py
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.http import JsonResponse
-from .models import Workflow, WorkflowStep
+from .models import Workflow, WorkflowStep, WorkflowExecution, WorkflowStepExecution
 import json
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.admin import site as admin_site
+from core.utils.forms import render_dynamic_form
+from django.contrib import messages
 
 
 # ✅ Summary Table
@@ -70,3 +72,66 @@ def workflow_builder(request, workflow_id):
         })
     })
     return render(request, 'core/workflow_builder.html', context)
+
+
+@staff_member_required
+def workflow_preview(request, workflow_id):
+    workflow = get_object_or_404(Workflow, id=workflow_id)
+
+    # Get the first "form" step
+    form_step = workflow.steps.filter(step_type='form').first()
+    form_html = ""
+    if form_step:
+        fields = form_step.config.get("fields", [])
+        form_html = render_dynamic_form(fields)
+
+    return render(request, "core/workflow_preview.html", {
+        "workflow": workflow,
+        "form_step": form_step,
+        "form_html": form_html,
+    })
+
+
+@staff_member_required
+def workflow_preview(request, workflow_id):
+    workflow = get_object_or_404(Workflow, id=workflow_id)
+    form_step = workflow.steps.filter(step_type='form').first()
+    form_html = ""
+
+    if not form_step:
+        return render(request, "core/workflow_preview.html", {
+            "workflow": workflow,
+            "form_step": None,
+            "form_html": "",
+        })
+
+    fields = form_step.config.get("fields", [])
+    form_html = render_dynamic_form(fields)
+
+    if request.method == "POST":
+        # 🧠 Capture form submission
+        submitted_data = {k: v for k, v in request.POST.items() if k != 'csrfmiddlewaretoken'}
+
+        # ✅ Create execution record
+        execution = WorkflowExecution.objects.create(
+            workflow=workflow,
+            initiator=request.user,
+            status='completed'
+        )
+
+        WorkflowStepExecution.objects.create(
+            execution=execution,
+            step=form_step,
+            status='done',
+            data=submitted_data
+        )
+
+        messages.success(request, "✅ Workflow form submitted successfully.")
+        return redirect(request.path)
+
+    return render(request, "core/workflow_preview.html", {
+        "workflow": workflow,
+        "form_step": form_step,
+        "form_html": form_html,
+    })
+

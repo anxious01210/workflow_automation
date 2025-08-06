@@ -195,15 +195,33 @@ function addFieldRow(field = {}, index = null) {
     row.innerHTML = `
     <label>Label: <input name="field_label_${index}" value="${field.label || ''}"></label>
     <label>Type:
-      <select name="field_type_${index}">
-        <option value="text" ${field.field_type === 'text' ? 'selected' : ''}>Text</option>
-        <option value="textarea" ${field.field_type === 'textarea' ? 'selected' : ''}>Textarea</option>
-        <option value="email" ${field.field_type === 'email' ? 'selected' : ''}>Email</option>
-        <option value="number" ${field.field_type === 'number' ? 'selected' : ''}>Number</option>
-        <option value="date" ${field.field_type === 'date' ? 'selected' : ''}>Date</option>
-        <option value="file" ${field.field_type === 'file' ? 'selected' : ''}>File</option>
-        <option value="choice" ${field.field_type === 'choice' ? 'selected' : ''}>Dropdown</option>
-      </select>
+        <select name="field_type_${index}">
+          <option value="text" ${field.field_type === 'text' ? 'selected' : ''}>Text</option>
+          <option value="textarea" ${field.field_type === 'textarea' ? 'selected' : ''}>Textarea</option>
+          <option value="email" ${field.field_type === 'email' ? 'selected' : ''}>Email</option>
+          <option value="number" ${field.field_type === 'number' ? 'selected' : ''}>Number</option>
+          <option value="phone" ${field.field_type === 'phone' ? 'selected' : ''}>Phone</option>
+          <option value="url" ${field.field_type === 'url' ? 'selected' : ''}>URL</option>
+        
+          <option value="date" ${field.field_type === 'date' ? 'selected' : ''}>Date</option>
+          <option value="time" ${field.field_type === 'time' ? 'selected' : ''}>Time</option>
+          <option value="datetime" ${field.field_type === 'datetime' ? 'selected' : ''}>DateTime</option>
+        
+          <option value="range_date" ${field.field_type === 'range_date' ? 'selected' : ''}>Date Range</option>
+          <option value="range_time" ${field.field_type === 'range_time' ? 'selected' : ''}>Time Range</option>
+          <option value="range_datetime" ${field.field_type === 'range_datetime' ? 'selected' : ''}>DateTime Range</option>
+        
+          <option value="choice" ${field.field_type === 'choice' ? 'selected' : ''}>Dropdown</option>
+          <option value="multi_choice" ${field.field_type === 'multi_choice' ? 'selected' : ''}>Multi-Select</option>
+        
+          <option value="checkbox" ${field.field_type === 'checkbox' ? 'selected' : ''}>Checkbox</option>
+          <option value="file" ${field.field_type === 'file' ? 'selected' : ''}>File Upload</option>
+          <option value="password" ${field.field_type === 'password' ? 'selected' : ''}>Password</option>
+        
+          <option value="section_heading" ${field.field_type === 'section_heading' ? 'selected' : ''}>Section Heading</option>
+          <option value="html_note" ${field.field_type === 'html_note' ? 'selected' : ''}>HTML Note</option>
+        </select>
+
     </label>
     <div class="field-inline">
       <label for="field_required_${index}">Required:</label>

@@ -16,6 +16,7 @@ class Workflow(models.Model):
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
+
 class WorkflowStep(models.Model):
     STEP_TYPES = [
         ('form', 'Form Input'),
@@ -35,6 +36,7 @@ class WorkflowStep(models.Model):
     class Meta:
         ordering = ['order']
 
+
 class WorkflowExecution(models.Model):
     workflow = models.ForeignKey(Workflow, on_delete=models.CASCADE)
     initiator = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True)
@@ -47,6 +49,7 @@ class WorkflowExecution(models.Model):
     ])
     started_at = models.DateTimeField(auto_now_add=True)
     finished_at = models.DateTimeField(null=True, blank=True)
+
 
 class WorkflowStepExecution(models.Model):
     execution = models.ForeignKey(WorkflowExecution, related_name='step_executions', on_delete=models.CASCADE)
@@ -62,17 +65,36 @@ class WorkflowStepExecution(models.Model):
     completed_at = models.DateTimeField(null=True, blank=True)
     data = models.JSONField(default=dict)  # collected form data or result
 
+
 class FormField(models.Model):
     step = models.ForeignKey(WorkflowStep, related_name='fields', on_delete=models.CASCADE)
     label = models.CharField(max_length=255)
-    field_type = models.CharField(max_length=50, choices=[
+
+    FIELD_TYPES = [
         ('text', 'Text'),
         ('textarea', 'Textarea'),
         ('email', 'Email'),
+        ('phone', 'Phone'),
+        ('url', 'URL'),
         ('file', 'File'),
         ('number', 'Number'),
+        ('password', 'Password'),
+
         ('date', 'Date'),
+        ('time', 'Time'),
+        ('datetime', 'DateTime'),
+
+        ('range_date', 'Date Range'),
+        ('range_time', 'Time Range'),
+        ('range_datetime', 'DateTime Range'),
+
         ('choice', 'Dropdown'),
-    ])
+        ('multi_choice', 'Multi-Select'),
+        ('checkbox', 'Checkbox'),
+
+        ('section_heading', 'Section Heading'),
+        ('html_note', 'HTML Note'),
+    ]
+    field_type = models.CharField(max_length=50, choices=FIELD_TYPES)
     required = models.BooleanField(default=True)
-    choices = models.TextField(blank=True)  # CSV: e.g. "Option1,Option2"
+    choices = models.TextField(blank=True, help_text="CSV format, e.g., Option1,Option2")
