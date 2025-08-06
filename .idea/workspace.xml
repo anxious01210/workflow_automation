@@ -5,13 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2c84581f-bbd6-49c2-b423-8cff6e136ee5" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/static/core/workflow_builder.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/core/workflow_builder.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/templates/core/workflow_builder.html" beforeDir="false" afterPath="$PROJECT_DIR$/core/templates/core/workflow_builder.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/db.sqlite3" beforeDir="false" afterPath="$PROJECT_DIR$/db.sqlite3" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/workflow_automation/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/workflow_automation/settings.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/workflow_automation/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/workflow_automation/urls.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/core/workflow_builder.css" beforeDir="false" afterPath="$PROJECT_DIR$/static/core/workflow_builder.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/staticfiles/core/workflow_builder.css" beforeDir="false" afterPath="$PROJECT_DIR$/staticfiles/core/workflow_builder.css" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -127,7 +124,7 @@
       <workItem from="1754230684939" duration="8192000" />
       <workItem from="1754243468262" duration="10548000" />
       <workItem from="1754336328772" duration="36000" />
-      <workItem from="1754403666322" duration="12411000" />
+      <workItem from="1754403666322" duration="13550000" />
     </task>
     <servers />
   </component>

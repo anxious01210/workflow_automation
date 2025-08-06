@@ -98,7 +98,7 @@ html:not([data-theme]) #save-workflow {
 }
 
 .step-saved {
-    background-color: #75c88b !important; /* Light green */
+    background-color: #9ecaa0 !important; /* Light green */
     transition: background-color 1s ease;
 }
 
@@ -182,3 +182,24 @@ html:not([data-theme]) #step-config-modal {
     border: 1px solid #ddd;
 }
 
+
+#notification.success {
+    background-color: #e6ffed;
+    border: 1px solid #66bb6a;
+    color: #2e7d32;
+}
+
+#notification.error {
+    background-color: #ffebee;
+    border: 1px solid #e53935;
+    color: #c62828;
+}
+
+#notification {
+    opacity: 0;
+    transition: opacity 0.4s ease;
+}
+
+#notification.show {
+    opacity: 1;
+}
