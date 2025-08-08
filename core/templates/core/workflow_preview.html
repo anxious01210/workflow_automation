@@ -1,20 +1,202 @@
-{% block content %}
-  {% if messages %}
-    <ul class="messagelist">
-      {% for message in messages %}
-        <li class="{{ message.tags }}">{{ message }}</li>
-      {% endfor %}
-    </ul>
-  {% endif %}
+{% extends "admin/base_site.html" %}
+{% load static %}
 
-  {% if form_step %}
-    <h2>{{ form_step.name }}</h2>
-    <form method="post">
-      {% csrf_token %}
-      {{ form_html|safe }}
-      <button type="submit" class="default">Submit</button>
-    </form>
-  {% else %}
-    <p><strong>No form step found in this workflow.</strong></p>
-  {% endif %}
+{% block content_title %}
+    <h1>🧭 Workflow Preview – {{ workflow.name }}</h1>
 {% endblock %}
+
+{% block content %}
+    <style>
+        #mind-map-container {
+            width: 100%;
+            overflow-x: auto;
+            overflow-y: hidden;
+            padding: 20px;
+            border: 1px solid #ccc;
+            background: var(--body-bg, #111);
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        #mind-map-svg {
+            display: block;
+            margin: 0 auto;
+        }
+    </style>
+    <div style="display: flex; gap: 2rem;">
+        <!-- Left: Form -->
+        <div style="flex: 1;">
+            <h2>📝 Form Preview</h2>
+            {% if form_html %}
+                <form method="post">{% csrf_token %}
+                    {{ form_html|safe }}
+                    <button type="submit" class="default">Submit</button>
+                </form>
+            {% else %}
+                <p>No form step found in this workflow.</p>
+            {% endif %}
+        </div>
+
+        <!-- Right: Step Summary -->
+        <div style="flex: 1;">
+            <h2>📚 Step Summary</h2>
+            <ol>
+                {% for step in steps %}
+                    <li>
+                        <strong>{{ step.name }}</strong> – <em>{{ step.step_type }}</em><br/>
+                        <small style="font-family: monospace; white-space: pre-wrap;">{{ step.config|safe }}</small>
+                    </li>
+                {% endfor %}
+            </ol>
+        </div>
+    </div>
+
+    <hr style="margin: 2rem 0;"/>
+
+    <div id="mind-map-container" style="
+    width: auto;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding: 20px;
+    border: 1px solid #ccc;
+    background: var(--body-bg, #fff); /* defaults to white */
+    border-radius: 8px;
+    text-align: center;
+    color: var(--body-fg, #000); /* used for arrows now */
+">
+        <svg id="mind-map-svg"></svg>
+    </div>
+
+
+    <!-- Include Dagre-D3 and D3 -->
+    <script src="https://d3js.org/d3.v5.min.js"></script>
+    <script src="https://unpkg.com/dagre-d3@0.6.4/dist/dagre-d3.min.js"></script>
+
+    <!-- Load workflow steps as JSON -->
+    {#    {{ steps_json|safe }}#}
+    <script>
+        window.workflowSteps = {{ steps_json|safe }};
+    </script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const steps = window.workflowSteps || [];
+
+            const svg = document.getElementById("mind-map-svg");
+            svg.innerHTML = "";
+
+            const fontSize = 14;
+            const nodeHeight = 50;
+            const spacingX = 30;
+            const svgHeight = 200;
+
+            const y = (svgHeight - nodeHeight) / 2;  // ✅ Centered vertically
+            let x = 10;
+            let positions = [];
+// Prepare SVG
+            svg.setAttribute("height", svgHeight);
+            svg.setAttribute("style", "min-height: 100px;");
+
+            // Define arrow marker
+            const defs = document.createElementNS("http://www.w3.org/2000/svg", "defs");
+            defs.innerHTML = `
+<marker id="arrow" viewBox="0 0 10 10" refX="10" refY="5"
+    markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+    <path d="M 0 0 L 10 5 L 0 10 z" fill="currentColor" />
+</marker>
+`;
+            svg.appendChild(defs);
+
+            // Build all nodes
+            steps.forEach((step, i) => {
+                const text = `${i + 1}. ${step.name} (${step.step_type})`;
+                const estTextWidth = text.length * fontSize * 0.55;
+                const boxWidth = Math.max(160, estTextWidth + 10);
+
+                // Save position for arrow drawing
+                positions.push({x, width: boxWidth});
+
+                // Group
+                const group = document.createElementNS("http://www.w3.org/2000/svg", "g");
+
+                // Box
+                const rect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+                rect.setAttribute("x", x);
+                rect.setAttribute("y", y);
+                rect.setAttribute("width", boxWidth);
+                rect.setAttribute("height", nodeHeight);
+                rect.setAttribute("rx", 8);
+                rect.setAttribute("fill", "#fff");
+                rect.setAttribute("stroke", "#000");
+
+                // Text
+                const label = document.createElementNS("http://www.w3.org/2000/svg", "text");
+                label.setAttribute("x", x + boxWidth / 2);
+                label.setAttribute("y", y + nodeHeight / 2 + 5);
+                label.setAttribute("text-anchor", "middle");
+                label.setAttribute("font-size", fontSize);
+                label.setAttribute("fill", "#000");
+                label.textContent = text;
+
+                group.appendChild(rect);
+                group.appendChild(label);
+                svg.appendChild(group);
+
+                // Move x for next box
+                x += boxWidth + spacingX;
+            });
+
+            // Draw arrows between boxes
+            for (let i = 0; i < positions.length - 1; i++) {
+                const curr = positions[i];
+                const next = positions[i + 1];
+
+                const x1 = curr.x + curr.width;
+                const y1 = y + nodeHeight / 2;
+                const x2 = next.x;
+                const y2 = y + nodeHeight / 2;
+
+                const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+                line.setAttribute("x1", x1);
+                line.setAttribute("y1", y1);
+                line.setAttribute("x2", x2);
+                line.setAttribute("y2", y2);
+                line.setAttribute("stroke", "currentColor");
+                line.setAttribute("stroke-width", "2");
+                line.setAttribute("marker-end", "url(#arrow)");
+
+                svg.appendChild(line);
+            }
+
+            // Auto adjust total width
+            const last = positions.at(-1);
+            svg.setAttribute("width", last.x + last.width + 80);
+        });
+    </script>
+
+
+
+{% endblock %}
+
+
+
+{#{% block content %}#}
+{#  {% if messages %}#}
+{#    <ul class="messagelist">#}
+{#      {% for message in messages %}#}
+{#        <li class="{{ message.tags }}">{{ message }}</li>#}
+{#      {% endfor %}#}
+{#    </ul>#}
+{#  {% endif %}#}
+{##}
+{#  {% if form_step %}#}
+{#    <h2>{{ form_step.name }}</h2>#}
+{#    <form method="post">#}
+{#      {% csrf_token %}#}
+{#      {{ form_html|safe }}#}
+{#      <button type="submit" class="default">Submit</button>#}
+{#    </form>#}
+{#  {% else %}#}
+{#    <p><strong>No form step found in this workflow.</strong></p>#}
+{#  {% endif %}#}
+{#{% endblock %}#}

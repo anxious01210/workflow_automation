@@ -93,7 +93,7 @@ def workflow_preview(request, workflow_id):
 
 
 @staff_member_required
-def workflow_preview(request, workflow_id):
+def workflow_form_test(request, workflow_id):
     workflow = get_object_or_404(Workflow, id=workflow_id)
     form_step = workflow.steps.filter(step_type='form').first()
     form_html = ""
@@ -132,6 +132,43 @@ def workflow_preview(request, workflow_id):
     return render(request, "core/workflow_preview.html", {
         "workflow": workflow,
         "form_step": form_step,
+        "form_html": form_html,
+    })
+
+from django.core.serializers.json import DjangoJSONEncoder
+from django.shortcuts import render, get_object_or_404
+from .models import Workflow, WorkflowStep
+import json
+@staff_member_required
+def workflow_preview(request, workflow_id):
+    workflow = get_object_or_404(Workflow, pk=workflow_id)
+    steps_qs = workflow.steps.order_by("order")
+
+    # Convert to plain dicts (only fields we need)
+    steps_data = [
+        {
+            "name": step.name,
+            "step_type": step.step_type,
+        }
+        for step in steps_qs
+    ]
+
+    form_html = ""
+    for step in steps_qs:
+        if step.step_type == "form":
+            # Call the function to generate the HTML form
+            from .utils.forms import render_dynamic_form
+            form_html = ""
+            for step in steps_qs:
+                if step.step_type == "form":
+                    fields = step.config.get("fields", [])
+                    form_html = render_dynamic_form(fields)
+                    break
+
+    return render(request, "core/workflow_preview.html", {
+        "workflow": workflow,
+        "steps": steps_qs,
+        "steps_json": json.dumps(steps_data, cls=DjangoJSONEncoder),
         "form_html": form_html,
     })
 

@@ -3,11 +3,7 @@ from django.db import models
 
 
 # Create your models here.
-# Workflow
-# WorkflowStep
-# WorkflowExecution
-# WorkflowStepExecution
-# FormField
+
 
 class Workflow(models.Model):
     name = models.CharField(max_length=255)
@@ -15,6 +11,9 @@ class Workflow(models.Model):
     created_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True)
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.name
 
 
 class WorkflowStep(models.Model):
@@ -36,6 +35,9 @@ class WorkflowStep(models.Model):
     class Meta:
         ordering = ['order']
 
+    def __str__(self):
+        return f"{self.workflow.name} – {self.name}"
+
 
 class WorkflowExecution(models.Model):
     workflow = models.ForeignKey(Workflow, on_delete=models.CASCADE)
@@ -50,6 +52,9 @@ class WorkflowExecution(models.Model):
     started_at = models.DateTimeField(auto_now_add=True)
     finished_at = models.DateTimeField(null=True, blank=True)
 
+    def __str__(self):
+        return f"Execution #{self.id} – {self.workflow.name}"
+
 
 class WorkflowStepExecution(models.Model):
     execution = models.ForeignKey(WorkflowExecution, related_name='step_executions', on_delete=models.CASCADE)
@@ -60,41 +65,43 @@ class WorkflowStepExecution(models.Model):
         ('done', 'Done'),
         ('skipped', 'Skipped'),
         ('error', 'Error'),
-    ])
+    ], default='pending')
     started_at = models.DateTimeField(null=True, blank=True)
     completed_at = models.DateTimeField(null=True, blank=True)
     data = models.JSONField(default=dict)  # collected form data or result
 
+    def __str__(self):
+        return f"{self.execution} – {self.step.name} [{self.status}]"
 
-class FormField(models.Model):
-    step = models.ForeignKey(WorkflowStep, related_name='fields', on_delete=models.CASCADE)
-    label = models.CharField(max_length=255)
-
-    FIELD_TYPES = [
-        ('text', 'Text'),
-        ('textarea', 'Textarea'),
-        ('email', 'Email'),
-        ('phone', 'Phone'),
-        ('url', 'URL'),
-        ('file', 'File'),
-        ('number', 'Number'),
-        ('password', 'Password'),
-
-        ('date', 'Date'),
-        ('time', 'Time'),
-        ('datetime', 'DateTime'),
-
-        ('range_date', 'Date Range'),
-        ('range_time', 'Time Range'),
-        ('range_datetime', 'DateTime Range'),
-
-        ('choice', 'Dropdown'),
-        ('multi_choice', 'Multi-Select'),
-        ('checkbox', 'Checkbox'),
-
-        ('section_heading', 'Section Heading'),
-        ('html_note', 'HTML Note'),
-    ]
-    field_type = models.CharField(max_length=50, choices=FIELD_TYPES)
-    required = models.BooleanField(default=True)
-    choices = models.TextField(blank=True, help_text="CSV format, e.g., Option1,Option2")
+# class FormField(models.Model):
+#     step = models.ForeignKey(WorkflowStep, related_name='fields', on_delete=models.CASCADE)
+#     label = models.CharField(max_length=255)
+#
+#     FIELD_TYPES = [
+#         ('text', 'Text'),
+#         ('textarea', 'Textarea'),
+#         ('email', 'Email'),
+#         ('phone', 'Phone'),
+#         ('url', 'URL'),
+#         ('file', 'File'),
+#         ('number', 'Number'),
+#         ('password', 'Password'),
+#
+#         ('date', 'Date'),
+#         ('time', 'Time'),
+#         ('datetime', 'DateTime'),
+#
+#         ('range_date', 'Date Range'),
+#         ('range_time', 'Time Range'),
+#         ('range_datetime', 'DateTime Range'),
+#
+#         ('choice', 'Dropdown'),
+#         ('multi_choice', 'Multi-Select'),
+#         ('checkbox', 'Checkbox'),
+#
+#         ('section_heading', 'Section Heading'),
+#         ('html_note', 'HTML Note'),
+#     ]
+#     field_type = models.CharField(max_length=50, choices=FIELD_TYPES)
+#     required = models.BooleanField(default=True)
+#     choices = models.TextField(blank=True, help_text="CSV format, e.g., Option1,Option2")

@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Workflow, WorkflowStep, WorkflowExecution, WorkflowStepExecution, FormField
+from .models import Workflow, WorkflowStep, WorkflowExecution, WorkflowStepExecution
 from django.utils.html import format_html
 from django.urls import reverse
 import json
@@ -7,16 +7,14 @@ from django.utils.safestring import mark_safe
 from django.db import models
 from django.forms import Textarea
 
+
 # Register your models here.
-
-
-admin.site.register(FormField)
 
 
 @admin.register(WorkflowStep)
 class WorkflowStepAdmin(admin.ModelAdmin):
     list_display = ("workflow", "name", "step_type", "order")
-    readonly_fields = ("pretty_config",)
+    readonly_fields = ("pretty_config", "name", "step_type", "config", "order")
     fields = ("workflow", "name", "step_type", "config", "order", "pretty_config")
 
     formfield_overrides = {
@@ -87,7 +85,7 @@ class WorkflowExecutionInline(admin.TabularInline):
 
 @admin.register(Workflow)
 class WorkflowAdmin(admin.ModelAdmin):
-    list_display = ("name", "created_by", "is_active", "created_at", "builder_link", 'preview_link')
+    list_display = ("name", "created_by", "is_active", "created_at", "builder_link", 'preview_link', 'test_link')
     inlines = [WorkflowExecutionInline]
 
     def builder_link(self, obj):
@@ -96,9 +94,13 @@ class WorkflowAdmin(admin.ModelAdmin):
 
     builder_link.short_description = "Builder"
 
+    def test_link(self, obj):
+        url = reverse('core:workflow_form_test', args=[obj.id])
+        return format_html('<a class="button" href="{}" target="_blank">🧪 Test Form</a>', url)
+
     def preview_link(self, obj):
         url = reverse('core:workflow_preview', args=[obj.id])
-        return format_html('<a class="button" href="{}" target="_blank">Preview Form</a>', url)
+        return format_html('<a class="button" href="{}" target="_blank">🧭 Full Preview</a>', url)
 
     preview_link.short_description = "Preview"
     preview_link.allow_tags = True
