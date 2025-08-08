@@ -1,10 +1,9 @@
 from django.conf import settings
 from django.db import models
+from django.contrib.auth.models import Group
 
 
 # Create your models here.
-
-
 class Workflow(models.Model):
     name = models.CharField(max_length=255)
     description = models.TextField(blank=True)
@@ -14,6 +13,18 @@ class Workflow(models.Model):
 
     def __str__(self):
         return self.name
+
+    def can_start(self, user):
+        if self.is_public:
+            return True
+        if not user.is_authenticated:
+            return False
+        if self.allowed_groups.exists():
+            if not user.groups.filter(id__in=self.allowed_groups.values_list("id", flat=True)).exists():
+                return False
+        if self.allowed_domains and getattr(user, "email_domain", None) not in self.allowed_domains:
+            return False
+        return True
 
 
 class WorkflowStep(models.Model):

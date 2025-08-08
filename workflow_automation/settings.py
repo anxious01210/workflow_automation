@@ -15,7 +15,6 @@ from pathlib import Path
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
@@ -27,18 +26,71 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-
+# Use your custom user model
+AUTH_USER_MODEL = "accounts.User"
 # Application definition
-
 INSTALLED_APPS = [
+    # Django core
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    # my apps
     'core.apps.CoreConfig',
+    "directory_sync",
+    # Required by allauth
+    "django.contrib.sites",
+    # Your app with the custom user
+    "accounts",
+    # Auth stack
+    "allauth",
+    "allauth.account",
+    "allauth.socialaccount",
+    "allauth.socialaccount.providers.microsoft",
+    "allauth.socialaccount.providers.google",
+    # Optional security
+    "axes",
 ]
+
+SITE_ID = 1
+
+# ------------------------
+# Authentication backends
+# ------------------------
+AUTHENTICATION_BACKENDS = [
+    # If using Axes standalone
+    "axes.backends.AxesStandaloneBackend",  # comment out if not using Axes
+
+    "django.contrib.auth.backends.ModelBackend",  # Django’s auth
+    "allauth.account.auth_backends.AuthenticationBackend",  # allauth
+]
+
+# ------------------------
+# Allauth configuration (new syntax)
+# ------------------------
+ACCOUNT_USER_MODEL_USERNAME_FIELD = None
+ACCOUNT_USERNAME_BLACKLIST = {"*"}  # disables username usage completely
+
+# Login method(s) allowed
+ACCOUNT_LOGIN_METHODS = {"email"}  # only email login
+
+# Signup form fields — * = required
+ACCOUNT_SIGNUP_FIELDS = ["email*", "password1*", "password2*"]
+
+# Redirect after login
+LOGIN_REDIRECT_URL = "accounts:post_login"
+
+# Custom account adapter for domain rules / SSO mapping
+ACCOUNT_ADAPTER = "accounts.adapters.AccountAdapter"
+
+# ------------------------
+# Axes (optional) config
+# ------------------------
+AXES_FAILURE_LIMIT = 5
+AXES_COOLOFF_TIME = 1  # hours
+AXES_LOCKOUT_CALLABLE = None  # custom hook if needed
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -46,8 +98,11 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'allauth.account.middleware.AccountMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    # Optional (if you're using django-axes):
+    "axes.middleware.AxesMiddleware",
 ]
 
 ROOT_URLCONF = 'workflow_automation.urls'
@@ -63,13 +118,13 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+
             ],
         },
     },
 ]
 
 WSGI_APPLICATION = 'workflow_automation.wsgi.application'
-
 
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
@@ -80,7 +135,6 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
@@ -100,7 +154,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/5.2/topics/i18n/
 
@@ -111,7 +164,6 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 
 USE_TZ = True
-
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
