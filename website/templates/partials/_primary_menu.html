@@ -1,0 +1,25 @@
+{% load wagtailimages_tags %}
+<div class="flex items-center gap-4 min-w-0">
+    <a href="/" class="shrink-0 flex items-center gap-2 font-semibold">
+        {% if settings and settings.logo %}
+            {% image settings.logo height-32 alt="Brand" class="h-8 w-auto" %}
+        {% else %}
+            BISK
+        {% endif %}
+    </a>
+
+    <nav class="flex items-center gap-4 text-sm flex-wrap">
+        {% if items and items|length %}
+            {% for item in items %}
+                <a href="{{ item.url }}"
+                   {% if item.new_tab %}target="_blank" rel="noopener"{% endif %}
+                   class="link link-hover whitespace-nowrap">{{ item.title }}</a>
+            {% endfor %}
+        {% else %}
+            <!-- Fallback until editors add items -->
+            <a href="/" class="link link-hover whitespace-nowrap">Home</a>
+            <a href="/blog/" class="link link-hover whitespace-nowrap">Blog</a>
+            <a href="/jobs/" class="link link-hover whitespace-nowrap">Careers</a>
+        {% endif %}
+    </nav>
+</div>

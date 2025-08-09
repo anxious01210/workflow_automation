@@ -1,0 +1,22 @@
+{% extends "base_site.html" %}
+{% load wagtailcore_tags %}
+{% block title %}Blog — {{ page.get_site.site_name|default:'BISK' }}{% endblock %}
+{% block content %}
+    <h1 class="text-3xl font-semibold mb-4">{{ page.title }}</h1>
+    <div class="grid md:grid-cols-3 gap-4">
+        {% for post in posts %}
+            <a href="{% pageurl post %}" class="card bg-base-100 border border-base-300 hover:shadow-md transition">
+                <div class="card-body">
+                    <div class="flex items-center justify-between">
+                        <h3 class="card-title text-lg">{{ post.title }}</h3>
+                        <span class="badge badge-ghost text-xs">{{ post.date }}</span>
+                    </div>
+                    <p class="text-sm opacity-80 line-clamp-3">{{ post.intro }}</p>
+                    <span class="link link-primary text-sm">Read more →</span>
+                </div>
+            </a>
+        {% empty %}
+            <div class="text-sm opacity-70">No blog posts yet.</div>
+        {% endfor %}
+    </div>
+{% endblock %}

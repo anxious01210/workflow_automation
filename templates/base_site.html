@@ -1,0 +1,95 @@
+{% load static menu_tags %}
+{% load static %}
+{% load static wagtailimages_tags wagtailsettings_tags menu_tags %}
+<!doctype html>
+<html lang="en" class="h-full" x-data="theme()">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"/>
+    <link rel="stylesheet" href="{% static 'site.css' %}">
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+    <script>
+        (function () {
+            const KEY = 'siteTheme';
+            const mql = window.matchMedia('(prefers-color-scheme: dark)');
+            const isDark = (mode) => mode === 'dark' || (mode !== 'light' && mql.matches);
+
+            const saved = localStorage.getItem(KEY) || 'system';
+            document.documentElement.classList.toggle('dark', isDark(saved));
+            document.documentElement.dataset.theme = isDark(saved) ? 'dark' : 'light';
+
+            window.theme = () => ({
+                mode: saved,
+                setMode(mode) {
+                    this.mode = mode;
+                    localStorage.setItem(KEY, mode);
+                    const dark = isDark(mode);
+                    document.documentElement.classList.toggle('dark', dark);
+                    document.documentElement.dataset.theme = dark ? 'dark' : 'light';
+                },
+                toggle() {
+                    this.setMode(isDark(this.mode) ? 'light' : 'dark');
+                }
+            });
+
+            mql.addEventListener('change', () => {
+                const mode = localStorage.getItem(KEY) || 'system';
+                if (mode === 'system') {
+                    const dark = isDark(mode);
+                    document.documentElement.classList.toggle('dark', dark);
+                    document.documentElement.dataset.theme = dark ? 'dark' : 'light';
+                }
+            });
+        })();
+    </script>
+</head>
+
+<body class="min-h-screen bg-base-100 text-base-content">
+{% include "partials/_announcement.html" %}
+<header class="sticky top-0 z-50 bg-base-100/90 border-b border-base-300 backdrop-blur">
+    <div class="max-w-7xl mx-auto px-3">
+        <div class="flex items-center h-12">
+            <!-- LEFT: logo (with dropdown) + links -->
+            <!-- Left: logo + links (from Wagtail) -->
+            <div class="navbar-start">
+                {% primary_menu %}
+            </div>
+
+            <!-- Right: portal + theme -->
+            <div class="ml-auto flex items-center gap-2">
+                <a class="btn btn-ghost btn-sm" href="/portal/">Portal</a>
+
+                <div class="dropdown dropdown-end dropdown-hover z-[100]">
+                    <button type="button" tabindex="0" class="btn btn-ghost btn-sm gap-1">
+                        <span x-show="mode==='light'">🌞</span>
+                        <span x-show="mode==='dark'">🌙</span>
+                        <span x-show="mode==='system'">🖥️</span>
+                        <span class="hidden md:inline">Theme</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3 opacity-60" viewBox="0 0 20 20"
+                             fill="currentColor">
+                            <path fill-rule="evenodd"
+                                  d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 111.06 1.06l-4.24 4.24a.75.75 0 01-1.06 0L5.25 8.29a.75.75 0 01-.02-1.08z"
+                                  clip-rule="evenodd"/>
+                        </svg>
+                    </button>
+                    <ul tabindex="0" class="dropdown-content menu menu-sm bg-base-100 rounded-box shadow p-2 w-36 mt-2">
+                        <li><a href="#" class="cursor-pointer" @click.prevent="setMode('light')">Light</a></li>
+                        <li><a href="#" class="cursor-pointer" @click.prevent="setMode('dark')">Dark</a></li>
+                        <li><a href="#" class="cursor-pointer" @click.prevent="setMode('system')">System</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+<main class="container mx-auto px-3 py-6">
+    {% block content %}{% endblock %}
+</main>
+
+{% include "partials/_footer.html" %}
+</body>
+</html>

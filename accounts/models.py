@@ -5,16 +5,15 @@ from .managers import UserManager
 
 ROLE_STUDENT = "role_student"
 ROLE_FACULTY = "role_faculty"
-ROLE_STAFF = "role_staff"  # your org staff (HR/Finance/etc.), NOT Django is_staff
-ROLE_PARENT = "role_guardian"
-ROLE_EXTERNAL = "role_external"  # registered public users
+ROLE_STAFF = "role_staff"          # org staff (HR/Finance/etc.), NOT Django is_staff
+ROLE_PARENT = "role_guardian"       # keep legacy var name, value is guardian
+ROLE_EXTERNAL = "role_external"
 ROLE_STUDENTS = "role_students"
 ROLE_PRIMARY = "role_primary"
 ROLE_SECONDARY = "role_secondary"
 ROLE_ADMINISTRATION = "role_administration"
 
 ROLE_SLUGS = {ROLE_STUDENT, ROLE_FACULTY, ROLE_STAFF, ROLE_PARENT, ROLE_EXTERNAL}
-
 
 class User(AbstractUser):
     username = None
@@ -36,16 +35,14 @@ class User(AbstractUser):
     licenses = models.JSONField(default=list, blank=True)
     groups_cache = models.JSONField(default=list, blank=True)
 
+    # auto-maintained by signals when a user has >=1 GuardianChild rows
     is_guardian = models.BooleanField(default=False)
 
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = []
-
     objects = UserManager()
 
-    # --- Normalizers (one place, easy to extend) ---
     def _normalize_fields(self):
-        # Email + domain
         if self.email:
             self.email = self.email.strip().lower()
             try:
@@ -55,11 +52,9 @@ class User(AbstractUser):
         else:
             self.email_domain = None
 
-        # Optional emails
         if self.manager_email:
             self.manager_email = self.manager_email.strip().lower()
 
-        # Trim strings (don’t change case—orgs may care about capitalization)
         if self.department:
             self.department = self.department.strip()
         if self.job_title:
@@ -68,27 +63,17 @@ class User(AbstractUser):
             self.tenant_id = self.tenant_id.strip()
         if self.azure_oid:
             self.azure_oid = self.azure_oid.strip()
-        # Names: AbstractUser has null=False here; never save None
+
         self.first_name = (self.first_name or "").strip()
         self.last_name = (self.last_name or "").strip()
 
     def save(self, *args, **kwargs):
-        self._normalize_fields()
+        self._normalize_fields
         super().save(*args, **kwargs)
 
 
-# accounts/models.py (add below)
-# class GuardianChild(models.Model):
-#     guardian = models.ForeignKey(User, on_delete=models.CASCADE, related_name="children_links")
-#     child  = models.ForeignKey(User, on_delete=models.CASCADE, related_name="guardian_links")
-#     relation = models.CharField(max_length=32, default="guardian")  # father/mother/guardian etc.
-#
-#     class Meta:
-#         unique_together = ("guardian", "child")
-
-from django.db import models
+# --- Guardian–Child link ---
 from django.db.models import Q, F
-
 
 class GuardianChild(models.Model):
     GUARDIAN_ROLE_CHOICES = [
@@ -107,16 +92,62 @@ class GuardianChild(models.Model):
         ("other", "Other"),
     ]
 
-    guardian = models.ForeignKey(User, on_delete=models.CASCADE, related_name="children_links")
-    child  = models.ForeignKey(User, on_delete=models.CASCADE, related_name="guardian_links")
-    guardian_role  = models.CharField(max_length=20, choices=GUARDIAN_ROLE_CHOICES, default="guardian")
+    guardian = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name="children_links"
+    )
+    child = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name="guardian_links"
+    )
+
+    # relation labels from each side (keep your current design)
+    guardian_role = models.CharField(max_length=20, choices=GUARDIAN_ROLE_CHOICES, default="guardian")
     child_relation = models.CharField(max_length=20, choices=CHILD_REL_CHOICES, default="child")
+
+    # useful flags (optional but handy)
+    is_primary = models.BooleanField(default=False)      # at most one per child? (see optional unique constraint below)
+    can_pickup = models.BooleanField(default=True)
+
+    # optional validity window
+    start_date = models.DateField(blank=True, null=True)
+    end_date = models.DateField(blank=True, null=True)
+
     note = models.TextField(blank=True)
 
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
     class Meta:
-        unique_together = ("guardian", "child")
-        constraints = [
-            models.CheckConstraint(check=~models.Q(guardian=models.F("child")), name="pc_guardian_not_child"),
-        ]
         verbose_name = "Guardian–child link"
         verbose_name_plural = "Guardian–child links"
+        unique_together = ("guardian", "child")
+        constraints = [
+            models.CheckConstraint(check=~Q(guardian=F("child")), name="pc_guardian_not_child"),
+            # Uncomment to enforce only one primary guardian per child:
+            # models.UniqueConstraint(fields=["child"], condition=Q(is_primary=True), name="uniq_primary_guardian_per_child"),
+        ]
+        indexes = [
+            models.Index(fields=["guardian"]),
+            models.Index(fields=["child"]),
+            models.Index(fields=["child", "is_primary"]),
+        ]
+        ordering = ["child", "-is_primary", "guardian_role", "guardian_id"]
+
+    def __str__(self):
+        return f"{self.guardian.email} → {self.child.email} ({self.guardian_role})"
+
+    def clean(self):
+        from django.core.exceptions import ValidationError
+        if self.guardian_id and self.child_id and self.guardian_id == self.child_id:
+            raise ValidationError({"guardian": "Guardian and child cannot be the same user."})
+        if self.end_date and self.start_date and self.end_date < self.start_date:
+            raise ValidationError({"end_date": "End date cannot be before start date."})
+
+    @property
+    def active(self):
+        from django.utils import timezone
+        today = timezone.localdate()
+        if self.start_date and self.start_date > today:
+            return False
+        if self.end_date and self.end_date < today:
+            return False
+        return True

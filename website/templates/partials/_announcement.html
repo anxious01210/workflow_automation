@@ -1,0 +1,9 @@
+{% load wagtailsettings_tags %}
+{% get_settings use_default_site=True %}
+{% with ux=settings.website.UXSettings %}
+    {% if ux.show_announcement and ux.announcement_text %}
+        <div class="bg-primary text-primary-content text-center text-sm py-1">
+            {{ ux.announcement_text }}
+        </div>
+    {% endif %}
+{% endwith %}

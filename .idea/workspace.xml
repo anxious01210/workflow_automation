@@ -5,18 +5,29 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2c84581f-bbd6-49c2-b423-8cff6e136ee5" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/accounts/forms.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/accounts/signals.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/site.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/careers/templates/careers/job_index_page.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/careers/templates/careers/job_posting_page.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/portals/urls.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/base_portal.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/base_site.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/website/templates/partials/_announcement.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/website/templates/partials/_footer.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/website/templates/partials/_hero_slider.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/website/templates/partials/_primary_menu.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/website/templates/website/blog_index_page.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/website/templates/website/blog_page.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/website/templates/website/home_page.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/website/templates/website/standard_page.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/website/templatetags/menu_tags.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/accounts/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/accounts/admin.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/accounts/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/accounts/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/directory_sync/apps.py" beforeDir="false" afterPath="$PROJECT_DIR$/directory_sync/apps.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/directory_sync/management/commands/run_directory_scheduler.py" beforeDir="false" afterPath="$PROJECT_DIR$/directory_sync/management/commands/run_directory_scheduler.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/directory_sync/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/directory_sync/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/directory_sync/scheduler.py" beforeDir="false" afterPath="$PROJECT_DIR$/directory_sync/scheduler.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/directory_sync/syncers/azure.py" beforeDir="false" afterPath="$PROJECT_DIR$/directory_sync/syncers/azure.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/directory_sync/utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/directory_sync/utils.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/accounts/signals.py" beforeDir="false" afterPath="$PROJECT_DIR$/accounts/signals.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/accounts/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/accounts/views.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/workflow_automation/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/workflow_automation/settings.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/workflow_automation/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/workflow_automation/urls.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -31,8 +42,8 @@
       <list>
         <option value="CSS File" />
         <option value="JavaScript File" />
-        <option value="HTML File" />
         <option value="Python Script" />
+        <option value="HTML File" />
       </list>
     </option>
   </component>
@@ -60,6 +71,7 @@
     &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.pycharm.django.structure.promotion.once.per.project&quot;: &quot;true&quot;,
+    &quot;django.template.preview.state&quot;: &quot;SHOW_EDITOR&quot;,
     &quot;git-widget-placeholder&quot;: &quot;main&quot;,
     &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
     &quot;last_opened_file_path&quot;: &quot;/home/rio/PycharmProjects/workflow_automation/core/templates/core&quot;,
@@ -69,7 +81,7 @@
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
     &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
     &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;editor.preferences.inline.completion&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;junie.application.models&quot;,
     &quot;to.speed.mode.migration.done&quot;: &quot;true&quot;,
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   },
@@ -139,7 +151,9 @@
       <workItem from="1754243468262" duration="10548000" />
       <workItem from="1754336328772" duration="36000" />
       <workItem from="1754403666322" duration="49583000" />
-      <workItem from="1754664947895" duration="16456000" />
+      <workItem from="1754664947895" duration="19425000" />
+      <workItem from="1754731222313" duration="3984000" />
+      <workItem from="1754738290530" duration="16626000" />
     </task>
     <servers />
   </component>

@@ -1,0 +1,49 @@
+{% extends "base_site.html" %}
+{% load wagtailcore_tags wagtailimages_tags %}
+
+{% block title %}{{ page.title }}{% endblock %}
+
+{% block content %}
+  <h1 class="text-3xl font-semibold mb-4">{{ page.title }}</h1>
+
+  {% if page.intro %}
+    <div class="prose dark:prose-invert mb-6">
+      {{ page.intro|richtext }}
+    </div>
+  {% endif %}
+
+  {% if page.content %}
+    {% for block in page.content %}
+      {% if block.block_type == 'hero' %}
+        <section class="hero bg-base-200 rounded-2xl p-6 mt-6">
+          <div class="hero-content flex-col lg:flex-row">
+            {% if block.value.image %}{% image block.value.image fill-640x360 class="rounded-lg shadow" %}{% endif %}
+            <div>
+              <h2 class="text-3xl font-bold">{{ block.value.heading }}</h2>
+              <p class="py-4">{{ block.value.subheading }}</p>
+              {% if block.value.cta_text and block.value.cta_url %}
+                <a href="{{ block.value.cta_url }}" class="btn btn-primary">{{ block.value.cta_text }}</a>
+              {% endif %}
+            </div>
+          </div>
+        </section>
+      {% elif block.block_type == 'feature_list' %}
+        <section class="grid md:grid-cols-3 gap-4 mt-6">
+          {% for f in block.value %}
+            <div class="card bg-base-100 border border-base-300">
+              <div class="card-body">
+                <h3 class="card-title">{{ f.title }}</h3>
+                <p class="text-sm opacity-80">{{ f.text }}</p>
+              </div>
+            </div>
+          {% endfor %}
+        </section>
+      {% elif block.block_type == 'richtext' %}
+        <div class="prose dark:prose-invert mt-6">{{ block.value|richtext }}</div>
+      {% endif %}
+    {% endfor %}
+  {% else %}
+    <!-- Friendly placeholder so it never renders blank -->
+    <div class="alert mt-6">Add blocks to “Content” on this Home page in /cms/ to replace this placeholder.</div>
+  {% endif %}
+{% endblock %}

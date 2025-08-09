@@ -37,13 +37,15 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    # my apps
-    'core.apps.CoreConfig',
+    # Your content apps
+    "website",
+    "careers",
+    "core",
     "directory_sync",
+    "portals",
+    "accounts",
     # Required by allauth
     "django.contrib.sites",
-    # Your app with the custom user
-    "accounts",
     # Auth stack
     "allauth",
     "allauth.account",
@@ -52,6 +54,21 @@ INSTALLED_APPS = [
     "allauth.socialaccount.providers.google",
     # Optional security
     "axes",
+    "taggit",
+    # Wagtail
+    "wagtail.sites",
+    "wagtail.contrib.settings",
+    "wagtail.contrib.forms",
+    "wagtail.contrib.sitemaps",
+    "wagtail.contrib.redirects",
+    "wagtail.images",
+    "wagtail.documents",
+    "wagtail.snippets",
+    "wagtail.users",
+    "wagtail.search",
+    "wagtail.admin",
+    "wagtail",
+
 ]
 
 SITE_ID = 1
@@ -216,3 +233,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 #       ├─ Python returns: naive datetimes
 #       ├─ Admin/templates show: same naive value (appears as UTC if your server runs UTC)
 #       └─ Notes: still naive; no automatic conversion; less safe than USE_TZ=True
+
+# Wagtail
+WAGTAIL_SITE_NAME = "BISK"  # or whatever you want shown in /cms/
+WAGTAILADMIN_BASE_URL = "http://localhost:8000"  # set your real domain in prod

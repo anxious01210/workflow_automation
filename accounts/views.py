@@ -1,14 +1,16 @@
-from django.shortcuts import render, redirect
+# accounts/views.py
+from django.shortcuts import redirect
+from .models import ROLE_STUDENT, ROLE_FACULTY, ROLE_STAFF, ROLE_PARENT, ROLE_EXTERNAL
 
-# Create your views here.
 def post_login_redirect(request):
     u = request.user
-    if u.groups.filter(name="role_student").exists():
+    # use constants so we never drift on group names again
+    if u.groups.filter(name=ROLE_STUDENT).exists():
         return redirect("student:dashboard")
-    if u.groups.filter(name="role_faculty").exists():
+    if u.groups.filter(name=ROLE_FACULTY).exists():
         return redirect("faculty:dashboard")
-    if u.groups.filter(name="role_staff").exists():
+    if u.groups.filter(name=ROLE_STAFF).exists():
         return redirect("staff:dashboard")
-    if u.groups.filter(name="role_parent").exists():
-        return redirect("parent:dashboard")
-    return redirect("external:dashboard")  # default
+    if u.groups.filter(name=ROLE_PARENT).exists():
+        return redirect("guardian:dashboard")  # you can keep 'parent:dashboard' if that's your URL name
+    return redirect("external:dashboard")

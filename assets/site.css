@@ -1,0 +1,9 @@
+@import "tailwindcss";
+
+/* Tailwind v4: define a dark-mode selector */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* Load daisyUI v5 as a Tailwind v4 plugin */
+@plugin "daisyui";
+
+/* (optional) put design tokens here with @theme { ... } */

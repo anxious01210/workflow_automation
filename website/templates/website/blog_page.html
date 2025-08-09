@@ -1,0 +1,18 @@
+{% extends "base_site.html" %}
+{% load wagtailcore_tags wagtailimages_tags %}
+{% block title %}{{ page.title }}{% endblock %}
+{% block content %}
+    <article class="prose dark:prose-invert">
+        <h1>{{ page.title }}</h1>
+        <p class="opacity-70">{{ page.date }} • {{ page.intro }}</p>
+        {% for block in page.body %}
+            {% if block.block_type == 'richtext' %}
+                {{ block.value|richtext }}
+            {% elif block.block_type == 'image' %}
+                {% image block.value width-1200 class="rounded" %}
+            {% elif block.block_type == 'quote' %}
+                <blockquote>{{ block.value }}</blockquote>
+            {% endif %}
+        {% endfor %}
+    </article>
+{% endblock %}

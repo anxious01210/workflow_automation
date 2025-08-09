@@ -1,0 +1,41 @@
+{% extends "base_site.html" %}
+{% load wagtailcore_tags %}
+{% block title %}{{ page.title }}{% endblock %}
+{% block content %}
+    <article class="prose dark:prose-invert max-w-3xl">
+        <h1>{{ page.title }}</h1>
+        <p class="opacity-70">
+            {{ page.department }} • {{ page.location }} • {{ page.employment_type }}
+            {% if page.closing_date %} • Closes {{ page.closing_date }}{% endif %}
+        </p>
+        {% for block in page.description %}
+            {% if block.block_type == 'richtext' %}
+                {{ block.value|richtext }}
+            {% elif block.block_type == 'list' %}
+                <ul>
+                    {% for item in block.value %}
+                        <li>{{ item }}</li>{% endfor %}
+                </ul>
+            {% endif %}
+        {% endfor %}
+        {% if page.apply_url %}
+            <a href="{{ page.apply_url }}" class="btn btn-primary mt-4">Apply</a>
+        {% endif %}
+    </article>
+
+    <script type="application/ld+json">
+        {
+          "@context": "https://schema.org/",
+          "@type": "JobPosting",
+          "title": "{{ page.title|escapejs }}",
+  "description": "{{ page.search_description|default:page.title|escapejs }}",
+  "datePosted": "{{ page.first_published_at|date:'c' }}",
+  "employmentType": "{{ page.employment_type|escapejs }}",
+  "hiringOrganization": {"@type":"Organization","name":"BISK"},
+  "jobLocation": {"@type":"Place","address": {"@type":"PostalAddress","addressLocality": "{{ page.location|escapejs }}"}}
+        {% if page.closing_date %},
+  "validThrough": "{{ page.closing_date|date:'c' }}"
+        {% endif %}
+        }
+    </script>
+{% endblock %}

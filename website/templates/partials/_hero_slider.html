@@ -1,0 +1,32 @@
+{% comment %}Render when HomePage has a `hero_slider` block in content{% endcomment %}
+{% load wagtailimages_tags %}
+<div x-data="{i:0, n: {{ slides|length }}, tick(){ this.i=(this.i+1)%this.n } }" x-init="setInterval(()=>tick(), 5000)"
+     class="mt-6">
+    <div class="carousel w-full rounded-2xl shadow">
+        {% for s in slides %}
+            <div class="carousel-item w-full">
+                <div class="w-full bg-base-200">
+                    <div class="max-w-5xl mx-auto px-3 py-8 grid lg:grid-cols-2 gap-6 items-center">
+                        <div>
+                            <h2 class="text-4xl font-bold">{{ s.heading }}</h2>
+                            <p class="mt-3 opacity-80">{{ s.subheading }}</p>
+                            {% if s.cta_text and s.cta_url %}
+                                <a href="{{ s.cta_url }}" class="btn btn-primary mt-4">{{ s.cta_text }}</a>
+                            {% endif %}
+                        </div>
+                        <div>
+                            {% if s.image %}{% image s.image fill-800x450 class="rounded-lg" %}{% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+    <div class="flex justify-center gap-2 mt-3">
+        {% for _ in slides %}
+            <button class="btn btn-xs"
+                    :class="{ 'btn-primary': i === {{ forloop.counter0 }}, 'btn-ghost': i !== {{ forloop.counter0 }} }"
+                    @click="i={{ forloop.counter0 }}"></button>
+        {% endfor %}
+    </div>
+</div>
