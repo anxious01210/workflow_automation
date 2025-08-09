@@ -95,6 +95,8 @@ AXES_LOCKOUT_CALLABLE = None  # custom hook if needed
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    # (LocaleMiddleware optional)
+    # 'django.middleware.timezone.TimezoneMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -159,8 +161,11 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
-
+# TIME_ZONE = 'UTC'
+TIME_ZONE = "Asia/Baghdad"
+# DB stays UTC (good practice).
+# Django Admin and templates will display datetimes in Asia/Baghdad automatically.
+# In templates, if you ever see UTC, add {{ dt|localtime }}.
 USE_I18N = True
 
 USE_TZ = True
@@ -183,3 +188,31 @@ MEDIA_ROOT = BASE_DIR / "media"
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Django datetime behavior
+# ├─ USE_TZ = True  (recommended)
+# │  ├─ TIME_ZONE = "Asia/Baghdad"
+# │  │  ├─ Save to DB: UTC (aware). e.g., 13:00 Baghdad → saved as 10:00 UTC
+# │  │  ├─ Python returns: timezone-aware datetimes (UTC internally)
+# │  │  ├─ Admin/templates show: auto-converted to Baghdad (13:00)
+# │  │  └─ Notes: safest; multi-server friendly; DST handled; use timezone.localtime()
+# │  └─ TIME_ZONE = "UTC"
+# │     ├─ Save to DB: UTC (aware) (same)
+# │     ├─ Python returns: aware (UTC)
+# │     ├─ Admin/templates show: UTC (no visible conversion)
+# │     └─ Notes: good for pure UTC sites; users see UTC times unless you convert
+# │
+# └─ USE_TZ = False  (not recommended for most apps)
+#    ├─ TIME_ZONE = "Asia/Baghdad"
+#    │  ├─ Save to DB: **naive local times** (no conversion). Typically whatever
+#    │  │  your server produced (often system local time). If you used datetime.now(),
+#    │  │  it’s whatever the OS is set to. No “UTC→local” math happens.
+#    │  ├─ Python returns: **naive** datetimes (no tzinfo)
+#    │  ├─ Admin/templates show: the same naive value (looks like Baghdad if your
+#    │  │  server clock is set that way)
+#    │  └─ Notes: easy to drift if server TZ changes; DST bugs; hard in multi-server setups
+#    └─ TIME_ZONE = "UTC"
+#       ├─ Save to DB: **naive** UTC-ish times (again, whatever your code/server produced)
+#       ├─ Python returns: naive datetimes
+#       ├─ Admin/templates show: same naive value (appears as UTC if your server runs UTC)
+#       └─ Notes: still naive; no automatic conversion; less safe than USE_TZ=True

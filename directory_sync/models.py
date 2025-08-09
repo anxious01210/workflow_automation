@@ -31,6 +31,10 @@ class ExternalDirectory(models.Model):
     last_error = models.TextField(blank=True)
     delta_link = models.CharField(max_length=500, blank=True)
 
+    class Meta:
+        verbose_name = "External directory"
+        verbose_name_plural = "External directories"
+
     def __str__(self): return f"{self.name} [{self.get_provider_display()}]"
 
 class SyncJob(models.Model):

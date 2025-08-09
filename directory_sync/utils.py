@@ -25,7 +25,7 @@ def enqueue_run_now(directory):
 
 # --- scheduling helpers ---
 def compute_next_run(directory, now=None):
-    now = now or timezone.now()
+    now = timezone.localtime(now or timezone.now())
     if directory.schedule_kind == "interval":
         minutes = max(1, directory.interval_minutes or 60)
         return now + timezone.timedelta(minutes=minutes)

@@ -4,6 +4,7 @@ from django.utils import timezone
 from django.db import transaction
 from directory_sync.models import ExternalDirectory, SyncJob
 from directory_sync.utils import get_syncer, compute_next_run
+from django.db.models import Q
 
 TICK_SECONDS = 30
 
@@ -16,7 +17,7 @@ class Command(BaseCommand):
             now = timezone.now()
             due = ExternalDirectory.objects.filter(is_enabled=True).filter(
                 # run if next_run_at is null (first run) or due
-                models.Q(next_run_at__isnull=True) | models.Q(next_run_at__lte=now)
+                Q(next_run_at__isnull=True) | Q(next_run_at__lte=now)
             )
             for d in due:
                 # Avoid overlapping runs: if a 'running' job exists, skip

@@ -6,8 +6,12 @@ from .managers import UserManager
 ROLE_STUDENT = "role_student"
 ROLE_FACULTY = "role_faculty"
 ROLE_STAFF = "role_staff"  # your org staff (HR/Finance/etc.), NOT Django is_staff
-ROLE_PARENT = "role_parent"
+ROLE_PARENT = "role_guardian"
 ROLE_EXTERNAL = "role_external"  # registered public users
+ROLE_STUDENTS = "role_students"
+ROLE_PRIMARY = "role_primary"
+ROLE_SECONDARY = "role_secondary"
+ROLE_ADMINISTRATION = "role_administration"
 
 ROLE_SLUGS = {ROLE_STUDENT, ROLE_FACULTY, ROLE_STAFF, ROLE_PARENT, ROLE_EXTERNAL}
 
@@ -32,7 +36,7 @@ class User(AbstractUser):
     licenses = models.JSONField(default=list, blank=True)
     groups_cache = models.JSONField(default=list, blank=True)
 
-    is_parent = models.BooleanField(default=False)
+    is_guardian = models.BooleanField(default=False)
 
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = []
@@ -64,16 +68,55 @@ class User(AbstractUser):
             self.tenant_id = self.tenant_id.strip()
         if self.azure_oid:
             self.azure_oid = self.azure_oid.strip()
+        # Names: AbstractUser has null=False here; never save None
+        self.first_name = (self.first_name or "").strip()
+        self.last_name = (self.last_name or "").strip()
 
     def save(self, *args, **kwargs):
         self._normalize_fields()
         super().save(*args, **kwargs)
 
+
 # accounts/models.py (add below)
-class ParentChild(models.Model):
-    parent = models.ForeignKey(User, on_delete=models.CASCADE, related_name="children_links")
-    child  = models.ForeignKey(User, on_delete=models.CASCADE, related_name="parent_links")
-    relation = models.CharField(max_length=32, default="parent")  # father/mother/guardian etc.
+# class GuardianChild(models.Model):
+#     guardian = models.ForeignKey(User, on_delete=models.CASCADE, related_name="children_links")
+#     child  = models.ForeignKey(User, on_delete=models.CASCADE, related_name="guardian_links")
+#     relation = models.CharField(max_length=32, default="guardian")  # father/mother/guardian etc.
+#
+#     class Meta:
+#         unique_together = ("guardian", "child")
+
+from django.db import models
+from django.db.models import Q, F
+
+
+class GuardianChild(models.Model):
+    GUARDIAN_ROLE_CHOICES = [
+        ("guardian", "Guardian"),
+        ("mother", "Mother"),
+        ("father", "Father"),
+        ("uncle", "Uncle"),
+        ("aunt", "Aunt"),
+        ("other", "Other"),
+    ]
+    CHILD_REL_CHOICES = [
+        ("child", "Child"),
+        ("daughter", "Daughter"),
+        ("son", "Son"),
+        ("ward", "Ward"),
+        ("other", "Other"),
+    ]
+
+    guardian = models.ForeignKey(User, on_delete=models.CASCADE, related_name="children_links")
+    child  = models.ForeignKey(User, on_delete=models.CASCADE, related_name="guardian_links")
+    guardian_role  = models.CharField(max_length=20, choices=GUARDIAN_ROLE_CHOICES, default="guardian")
+    child_relation = models.CharField(max_length=20, choices=CHILD_REL_CHOICES, default="child")
+    note = models.TextField(blank=True)
 
     class Meta:
-        unique_together = ("parent", "child")
+        unique_together = ("guardian", "child")
+        constraints = [
+            models.CheckConstraint(check=~models.Q(guardian=models.F("child")), name="pc_guardian_not_child"),
+        ]
+        verbose_name = "Guardian–child link"
+        verbose_name_plural = "Guardian–child links"

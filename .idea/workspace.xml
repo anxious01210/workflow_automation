@@ -5,22 +5,17 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2c84581f-bbd6-49c2-b423-8cff6e136ee5" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/accounts/adapters.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/accounts/management/commands/ensure_role_groups.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/accounts/managers.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/accounts/utils.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/directory_sync/management/commands/run_directory_scheduler.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/directory_sync/scheduler.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/directory_sync/syncers/azure.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/directory_sync/syncers/base.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/directory_sync/syncers/google.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/directory_sync/utils.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/accounts/forms.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/accounts/signals.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/migrations/0001_initial.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/migrations/0002_alter_formfield_choices_alter_formfield_field_type.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/migrations/0003_alter_workflowstepexecution_status_delete_formfield.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/core/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/db.sqlite3" beforeDir="false" afterPath="$PROJECT_DIR$/db.sqlite3" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/accounts/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/accounts/admin.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/accounts/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/accounts/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/directory_sync/apps.py" beforeDir="false" afterPath="$PROJECT_DIR$/directory_sync/apps.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/directory_sync/management/commands/run_directory_scheduler.py" beforeDir="false" afterPath="$PROJECT_DIR$/directory_sync/management/commands/run_directory_scheduler.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/directory_sync/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/directory_sync/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/directory_sync/scheduler.py" beforeDir="false" afterPath="$PROJECT_DIR$/directory_sync/scheduler.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/directory_sync/syncers/azure.py" beforeDir="false" afterPath="$PROJECT_DIR$/directory_sync/syncers/azure.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/directory_sync/utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/directory_sync/utils.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/workflow_automation/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/workflow_automation/settings.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -55,35 +50,35 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "DefaultHtmlFileTemplate": "HTML File",
-    "Django Server.workflow_automation.executor": "Run",
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "RunOnceActivity.OpenDjangoStructureViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "RunOnceActivity.pycharm.django.structure.promotion.once.per.project": "true",
-    "git-widget-placeholder": "main",
-    "junie.onboarding.icon.badge.shown": "true",
-    "last_opened_file_path": "/home/rio/PycharmProjects/workflow_automation/core/templates/core",
-    "list.type.of.created.stylesheet": "CSS",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "editor.preferences.inline.completion",
-    "to.speed.mode.migration.done": "true",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;DefaultHtmlFileTemplate&quot;: &quot;HTML File&quot;,
+    &quot;Django Server.workflow_automation.executor&quot;: &quot;Run&quot;,
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.OpenDjangoStructureViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.pycharm.django.structure.promotion.once.per.project&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/home/rio/PycharmProjects/workflow_automation/core/templates/core&quot;,
+    &quot;list.type.of.created.stylesheet&quot;: &quot;CSS&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;editor.preferences.inline.completion&quot;,
+    &quot;to.speed.mode.migration.done&quot;: &quot;true&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   },
-  "keyToStringList": {
-    "DatabaseDriversLRU": [
-      "sqlite"
+  &quot;keyToStringList&quot;: {
+    &quot;DatabaseDriversLRU&quot;: [
+      &quot;sqlite&quot;
     ]
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/core/templates/core" />
@@ -144,6 +139,7 @@
       <workItem from="1754243468262" duration="10548000" />
       <workItem from="1754336328772" duration="36000" />
       <workItem from="1754403666322" duration="49583000" />
+      <workItem from="1754664947895" duration="16456000" />
     </task>
     <servers />
   </component>

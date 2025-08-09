@@ -7,6 +7,10 @@ from .utils import get_syncer, compute_next_run
 
 _started_flag = False
 
+def _now_local():
+    # Convert UTC “now” to the default time zone (Asia/Baghdad from settings)
+    return timezone.localtime(timezone.now())
+
 def start_scheduler_once():
     """Start exactly once (avoid duplicate threads with the autoreloader)."""
     global _started_flag
@@ -23,7 +27,7 @@ def start_scheduler_once():
 
 def _loop(tick_seconds: int):
     while True:
-        now = timezone.now()
+        now = _now_local()
         due = ExternalDirectory.objects.filter(is_enabled=True).filter(
             Q(next_run_at__isnull=True) | Q(next_run_at__lte=now)
         )
@@ -48,8 +52,8 @@ def _loop(tick_seconds: int):
                 job.mark(status="failed", notes=f"{e}\n{traceback.format_exc()}")
                 d.last_status, d.last_error = "failed", str(e)
 
-            d.last_run_at = timezone.now()
-            d.next_run_at = compute_next_run(d, now=timezone.now())
+            d.last_run_at = _now_local()
+            d.next_run_at = compute_next_run(d, now=_now_local())
             d.save(update_fields=["last_run_at", "last_status", "last_error", "next_run_at"])
 
         time.sleep(tick_seconds)
