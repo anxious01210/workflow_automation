@@ -1,0 +1,67 @@
+{% load wagtailimages_tags wagtailcore_tags wagtailsettings_tags %}
+{% if block.block_type == 'link_group' %}
+    <div>
+        {% if block.value.heading %}<h3 class="font-semibold mb-2">{{ block.value.heading }}</h3>{% endif %}
+        <ul class="space-y-1 text-sm">
+            {% for l in block.value.links %}
+                {% if l.value.page %}
+                    <li><a class="link link-hover" href="{{ l.value.page.url }}" {% if l.value.new_tab %}target="_blank"
+                           rel="noopener"{% endif %}>{{ l.value.text }}</a></li>
+                {% else %}
+                    <li><a class="link link-hover" href="{{ l.value.url }}" {% if l.value.new_tab %}target="_blank"
+                           rel="noopener"{% endif %}>{{ l.value.text }}</a></li>
+                {% endif %}
+            {% endfor %}
+        </ul>
+    </div>
+{% elif block.block_type == 'social' %}
+    <div class="flex flex-wrap gap-3 items-center">
+        {% if block.value.source == 'settings' %}
+            {% with ux=settings.website.UXSettings %}
+                {% for s in ux.social_links.all %}
+                    <a class="btn btn-ghost btn-xs" href="{{ s.url }}" target="_blank" rel="noopener">{{ s.label }}</a>
+                {% endfor %}
+            {% endwith %}
+        {% else %}
+            {% for it in block.value.items %}
+                <a class="btn btn-ghost btn-xs" href="{{ it.url }}" target="_blank" rel="noopener">{{ it.label }}</a>
+            {% endfor %}
+        {% endif %}
+    </div>
+{% elif block.block_type == 'logo' %}
+    <div>
+        {% if block.value.image %}
+            {% if block.value.link_to_home %}<a href="/">{% endif %}
+        {% image block.value.image height-40 class="h-10 w-auto" %}
+        {% if block.value.link_to_home %}</a>{% endif %}
+        {% else %}
+            <a href="/" class="font-semibold">{{ request.site.site_name|default:'BISK' }}</a>
+        {% endif %}
+    </div>
+{% elif block.block_type == 'image' %}
+    <div>{% image block.value.image width-600 alt=block.value.alt class="rounded" %}</div>
+{% elif block.block_type == 'cta' %}
+    <div><a href="{{ block.value.url }}" class="btn btn-{{ block.value.style }}">{{ block.value.text }}</a></div>
+{% elif block.block_type == 'address' %}
+    <div>
+        {% if block.value.heading %}<h3 class="font-semibold mb-2">{{ block.value.heading }}</h3>{% endif %}
+        <div class="text-sm opacity-80 space-y-0.5">
+            {% for ln in block.value.lines %}
+                <div>{{ ln }}</div>{% endfor %}
+            {% if block.value.phone %}
+                <div>{{ block.value.phone }}</div>{% endif %}
+            {% if block.value.email %}
+                <div>{{ block.value.email }}</div>{% endif %}
+        </div>
+    </div>
+{% elif block.block_type == 'divider' %}
+    <div class="col-span-full border-t border-base-300" style="border-top-width: {{ block.value.thickness }}px"></div>
+{% elif block.block_type == 'spacer' %}
+    <div style="height: {{ block.value.height_px }}px" class="col-span-full"></div>
+{% elif block.block_type == 'richtext' %}
+    <div class="prose dark:prose-invert">{{ block.value|richtext }}</div>
+{% elif block.block_type == 'embed' %}
+    <div class="overflow-hidden rounded">
+        <iframe src="{{ block.value.url }}" class="w-full h-56" loading="lazy"></iframe>
+    </div>
+{% endif %}

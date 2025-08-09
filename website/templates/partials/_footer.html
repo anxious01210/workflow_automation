@@ -1,69 +1,99 @@
-{% load wagtailsettings_tags %}
+{% load wagtailsettings_tags wagtailimages_tags %}
 {% get_settings use_default_site=True %}
-{% with ux=settings.website.UXSettings %}
-    <footer class="border-t border-base-300 mt-12">
-        <div class="footer-grid"
-             style="--px: {{ ux.footer_pad_x_px }}px; --py: {{ ux.footer_pad_y_px }}px; --gap: {{ ux.footer_gap_px }}px; --cols: {{ ux.footer_groups_per_row }};">
-            <div class="footer-container">
-                <div class="groups">
-                    {# New groups (preferred) #}
-                    {% if ux.footer_groups.all %}
-                        {% for g in ux.footer_groups.all %}
-                            <section class="group">
-                                <h3 class="font-semibold mb-2">{{ g.title }}</h3>
-                                <ul class="space-y-1 text-sm">
-                                    {% for link in g.links.all %}
-                                        <li><a class="link link-hover" href="{{ link.url }}">{{ link.title }}</a></li>
-                                    {% empty %}
-                                        <li class="opacity-60 text-sm">No links</li>
-                                    {% endfor %}
-                                </ul>
-                            </section>
-                        {% endfor %}
-                    {% else %}
-
-                    {% endif %}
-                </div>
-
-                <div class="mt-6 flex flex-wrap gap-3">
-                    {% for s in ux.social_links.all %}
-                        <a class="btn btn-ghost btn-xs" href="{{ s.url }}" target="_blank"
-                           rel="noopener">{{ s.label }}</a>
-                    {% endfor %}
-                </div>
+{% with fs=settings.website.FooterSettings %}
+    <footer class="mt-12 relative border-t border-base-300" role="contentinfo" aria-label="Site footer">
+        {# Backgrounds / overlay #}
+        {% if fs.bg_style == 'solid' and fs.bg_color %}
+            <div class="absolute inset-0 -z-10" style="background: {{ fs.bg_color }}"></div>
+        {% elif fs.bg_style == 'gradient' and fs.gradient_from and fs.gradient_to %}
+            <div class="absolute inset-0 -z-10"
+                 style="background: linear-gradient(135deg, {{ fs.gradient_from }}, {{ fs.gradient_to }})"></div>
+        {% endif %}
+        {% if fs.bg_style == 'image' and fs.bg_image %}
+            <div class="absolute inset-0 -z-10">
+                {% image fs.bg_image fill-2000x1000 class="w-full h-full object-cover" %}
             </div>
+        {% endif %}
+        {% if fs.overlay_color and fs.overlay_opacity %}
+            <div class="absolute inset-0 -z-10"
+                 style="background: {{ fs.overlay_color }}; opacity: calc({{ fs.overlay_opacity }} / 100);"></div>
+        {% endif %}
+
+        <div class="{% if fs.container == 'container' %}max-w-7xl mx-auto{% endif %}">
+            {# SECTION 1 #}
+            {% if fs.s1_enabled %}
+                <section class="footer-region {% if fs.s1_container == 'container' %}max-w-7xl mx-auto{% endif %}"
+                         style="--cols-md: {{ fs.s1_cols_md }}; --cols-lg: {{ fs.s1_cols_lg }}; --gap: {{ fs.s1_gap }}px; --px: {{ fs.s1_pad_x }}px; --py: {{ fs.s1_pad_y }}px;">
+                    <div class="region-inner">
+                        <div class="region-grid">
+                            {% for block in fs.s1_content %}{% include "partials/_footer_switch.html" %}{% endfor %}
+                        </div>
+                    </div>
+                </section>
+            {% endif %}
+
+            {# SECTION 2 #}
+            {% if fs.s2_enabled %}
+                <section class="footer-region {% if fs.s2_container == 'container' %}max-w-7xl mx-auto{% endif %}"
+                         style="--cols-md: {{ fs.s2_cols_md }}; --cols-lg: {{ fs.s2_cols_lg }}; --gap: {{ fs.s2_gap }}px; --px: {{ fs.s2_pad_x }}px; --py: {{ fs.s2_pad_y }}px;">
+                    <div class="region-inner">
+                        <div class="region-grid">
+                            {% for block in fs.s2_content %}{% include "partials/_footer_switch.html" %}{% endfor %}
+                        </div>
+                    </div>
+                </section>
+            {% endif %}
+
+            {# SECTION 3 #}
+            {% if fs.s3_enabled %}
+                <section class="footer-region {% if fs.s3_container == 'container' %}max-w-7xl mx-auto{% endif %}"
+                         style="--cols-md: {{ fs.s3_cols_md }}; --cols-lg: {{ fs.s3_cols_lg }}; --gap: {{ fs.s3_gap }}px; --px: {{ fs.s3_pad_x }}px; --py: {{ fs.s3_pad_y }}px;">
+                    <div class="region-inner">
+                        <div class="region-grid">
+                            {% for block in fs.s3_content %}{% include "partials/_footer_switch.html" %}{% endfor %}
+                        </div>
+                    </div>
+                </section>
+            {% endif %}
+
+            {# SECTION 4 #}
+            {% if fs.s4_enabled %}
+                <section class="footer-region {% if fs.s4_container == 'container' %}max-w-7xl mx-auto{% endif %}"
+                         style="--cols-md: {{ fs.s4_cols_md }}; --cols-lg: {{ fs.s4_cols_lg }}; --gap: {{ fs.s4_gap }}px; --px: {{ fs.s4_pad_x }}px; --py: {{ fs.s4_pad_y }}px;">
+                    <div class="region-inner">
+                        <div class="region-grid">
+                            {% for block in fs.s4_content %}{% include "partials/_footer_switch.html" %}{% endfor %}
+                        </div>
+                    </div>
+                </section>
+            {% endif %}
         </div>
-        <div class="border-t border-base-300 py-4 text-sm opacity-70">
-            <div class="max-w-7xl mx-auto px-3">© {% now "Y" %} {{ request.site.site_name|default:'BISK' }}</div>
-        </div>
-    </footer>
 
-    <style>
-        /***** Layout driven by CSS variables so you can change values in Wagtail *****/
-        .footer-grid {
-            padding-left: var(--px);
-            padding-right: var(--px);
-            padding-top: var(--py);
-            padding-bottom: var(--py);
-        }
-
-        .footer-container {
-            max-width: 80rem;
-            margin-left: auto;
-            margin-right: auto;
-        }
-
-        .groups {
-            display: grid;
-            gap: var(--gap);
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-        }
-
-        @media (min-width: 1024px) {
-            /* desktop: lock to N columns */
-            .groups {
-                grid-template-columns: repeat(var(--cols), minmax(0, 1fr));
+        <style>
+            .footer-region {
+                padding-left: var(--px);
+                padding-right: var(--px);
+                padding-top: var(--py);
+                padding-bottom: var(--py);
             }
-        }
-    </style>
+
+            .footer-region .region-grid {
+                display: grid;
+                gap: var(--gap);
+                grid-template-columns: repeat(1, minmax(0, 1fr));
+            }
+
+            @media (min-width: 768px) {
+                .footer-region .region-grid {
+                    grid-template-columns: repeat(var(--cols-md), minmax(0, 1fr));
+                }
+            }
+
+            @media (min-width: 1024px) {
+                .footer-region .region-grid {
+                    grid-template-columns: repeat(var(--cols-lg), minmax(0, 1fr));
+                }
+            }
+        </style>
+    </footer>
 {% endwith %}
