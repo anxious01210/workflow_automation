@@ -55,11 +55,19 @@ class AzureSyncer:
         notes = []
         include_groups = self.d.include_groups
         include_licenses = self.d.include_licenses
+        # Only pull/create enabled accounts? (safe if field not migrated yet)
+        only_active = getattr(self.d, "only_active", False)
+        # NEW: normalize allowed domains (if any)
+        allowed_set = set(
+            d.strip().lower()
+            for d in (self.d.allowed_domains or [])
+            if isinstance(d, str) and d.strip()
+        )
 
         def apply_user_fields(obj, u):
             # identity + status
             obj.identity_source = "AZURE"
-            obj.is_active = bool(u.get("accountEnabled", True))
+            # obj.is_active = bool(u.get("accountEnabled", True))
             obj.azure_oid = u.get("id")
             obj.tenant_id = self.d.credentials.get("tenant_id")
 
@@ -101,10 +109,42 @@ class AzureSyncer:
                         # skip users with no usable email
                         continue
 
+                    # NEW: respect "only_active"
+                    enabled = bool(u.get("accountEnabled", True))
+
+                    # A) Only active: skip creating disabled, deactivate existing
+                    if only_active and not enabled:
+                        try:
+                            obj = User.objects.get(email=email)
+                            if obj.identity_source == "AZURE" and obj.is_active:
+                                obj.is_active = False
+                                obj.save(update_fields=["is_active"])
+                                deactivated += 1
+                        except User.DoesNotExist:
+                            pass
+                        continue
+
+                    # B) Allowed domains: skip outside; deactivate if it already exists
+                    if allowed_set:
+                        domain = email.split("@")[-1]
+                        if domain not in allowed_set:
+                            try:
+                                obj = User.objects.get(email=email)
+                                if obj.identity_source == "AZURE" and obj.is_active:
+                                    obj.is_active = False
+                                    obj.save(update_fields=["is_active"])
+                                    deactivated += 1
+                            except User.DoesNotExist:
+                                pass
+                            continue
+
                     obj, is_created = User.objects.get_or_create(
                         email=email,
-                        defaults={"identity_source": "AZURE", "is_active": bool(u.get("accountEnabled", True))},
+                        # defaults={"identity_source": "AZURE", "is_active": bool(u.get("accountEnabled", True))},
+                        defaults={"identity_source": "AZURE", "is_active": enabled},
                     )
+                    # mirror current status on updates too
+                    obj.is_active = enabled
 
                     # 3) map fields (names included; never None for names)
                     apply_user_fields(obj, u)
