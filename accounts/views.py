@@ -1,6 +1,9 @@
 # accounts/views.py
 from django.shortcuts import redirect
 from .models import ROLE_STUDENT, ROLE_FACULTY, ROLE_STAFF, ROLE_PARENT, ROLE_EXTERNAL
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.views.generic import TemplateView
+
 
 def post_login_redirect(request):
     u = request.user
@@ -14,3 +17,7 @@ def post_login_redirect(request):
     if u.groups.filter(name=ROLE_PARENT).exists():
         return redirect("guardian:dashboard")  # you can keep 'parent:dashboard' if that's your URL name
     return redirect("external:dashboard")
+
+
+class PostLoginView(LoginRequiredMixin, TemplateView):
+    template_name = "account/post_login.html"

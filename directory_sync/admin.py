@@ -2,12 +2,16 @@ from django.contrib import admin, messages
 from django.utils import timezone
 from .models import ExternalDirectory, SyncJob
 from .utils import enqueue_run_now, test_connection
+from django.db import models as dj_models
 
 @admin.register(ExternalDirectory)
 class ExternalDirectoryAdmin(admin.ModelAdmin):
     list_display = ("name","provider","is_enabled","schedule_kind","interval_minutes","cron_expr","last_run_at","next_run_at","last_status")
     list_filter = ("provider","is_enabled","schedule_kind","last_status")
     readonly_fields = ("last_run_at","next_run_at","last_status","last_error")
+    formfield_overrides = {
+        dj_models.TextField: {"widget": admin.widgets.AdminTextareaWidget(attrs={"rows":2})},
+    }
 
     actions = ["action_run_now","action_test_connection","action_pause","action_resume"]
 

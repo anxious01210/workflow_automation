@@ -143,6 +143,10 @@ class AzureSyncer:
                         # defaults={"identity_source": "AZURE", "is_active": bool(u.get("accountEnabled", True))},
                         defaults={"identity_source": "AZURE", "is_active": enabled},
                     )
+                    # Make sure newly created users are marked with an unusable password so password login can’t work by accident.
+                    if is_created:
+                        obj.set_unusable_password()  # ⬅️ ensures password auth can’t be used
+
                     # mirror current status on updates too
                     obj.is_active = enabled
 

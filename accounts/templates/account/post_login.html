@@ -1,0 +1,73 @@
+{% load i18n %}
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <title>{% trans "Welcome" %}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+            background: #f6f7fb;
+            margin: 0;
+        }
+
+        .wrap {
+            max-width: 720px;
+            margin: 8vh auto;
+            background: #fff;
+            padding: 24px;
+            border-radius: 12px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, .08);
+        }
+
+        h1 {
+            margin: 0 0 10px;
+        }
+
+        .muted {
+            color: #6b7280;
+        }
+
+        a.btn {
+            display: inline-block;
+            margin: 8px 8px 0 0;
+            padding: 10px 14px;
+            border-radius: 10px;
+            background: #111827;
+            color: #fff;
+            text-decoration: none;
+        }
+
+        .grid {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 10px;
+        }
+
+        .card {
+            background: #f9fafb;
+            padding: 12px 14px;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+<div class="wrap">
+    <h1>{% trans "You're signed in" %}</h1>
+    <p class="muted">{{ request.user.email }}</p>
+
+    <div class="grid">
+        <div class="card">{% trans "Name" %}: {{ request.user.first_name }} {{ request.user.last_name }}</div>
+        <div class="card">{% trans "Department" %}: {{ request.user.department|default:"—" }}</div>
+        <div class="card">{% trans "Job title" %}: {{ request.user.job_title|default:"—" }}</div>
+    </div>
+
+    <p>
+        <a class="btn" href="/admin/">{% trans "Go to Admin" %}</a>
+        <a class="btn" href="{% url 'account_logout' %}">{% trans "Sign out" %}</a>
+    </p>
+</div>
+</body>
+</html>

@@ -21,8 +21,11 @@ from django.conf.urls.static import static
 from wagtail import urls as wagtail_urls
 from wagtail.admin import urls as wagtailadmin_urls
 from wagtail.documents import urls as wagtaildocs_urls
+
 urlpatterns = [
     path('admin/', admin.site.urls),
+    # path("accounts/", include("allauth.urls")),
+    path("accounts/", include("accounts.urls", namespace="accounts")),
     path('', include('core.urls', namespace='core')),  # Add this
     path("cms/", include(wagtailadmin_urls)),  # editors here
     path("documents/", include(wagtaildocs_urls)),

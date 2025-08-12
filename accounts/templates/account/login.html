@@ -1,0 +1,253 @@
+{% load i18n account socialaccount %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <title>{% trans "Sign in" %}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <style>
+        :root {
+            font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+        }
+
+        body {
+            margin: 0;
+            background: #f6f7fb;
+        }
+
+        .wrap {
+            max-width: 420px;
+            margin: 6vh auto;
+            padding: 24px;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, .08);
+        }
+
+        h1 {
+            margin: 0 0 12px;
+            font-size: 1.5rem;
+        }
+
+        .muted {
+            color: #6b7280;
+            margin: 0 0 20px;
+        }
+
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 12px 14px;
+            border-radius: 10px;
+            border: 1px solid #d1d5db;
+            background: #fff;
+            text-align: center;
+            text-decoration: none;
+            color: #111827;
+            font-weight: 600;
+        }
+
+        .btn + .btn {
+            margin-top: 10px;
+        }
+
+        .btn.ms {
+            background: #2563eb;
+            border-color: #2563eb;
+            color: #fff;
+        }
+
+        .btn.google {
+            background: #fff;
+        }
+
+        .hr {
+            display: flex;
+            align-items: center;
+            margin: 18px 0;
+            color: #9ca3af;
+        }
+
+        .hr::before, .hr::after {
+            content: "";
+            flex: 1;
+            height: 1px;
+            background: #e5e7eb;
+        }
+
+        .hr span {
+            margin: 0 10px;
+            font-size: .85rem;
+        }
+
+        form p {
+            margin: 0 0 12px;
+        }
+
+        input[type="email"], input[type="text"], input[type="password"] {
+            width: 100%;
+            padding: 10px 12px;
+            border-radius: 10px;
+            border: 1px solid #d1d5db;
+        }
+
+        label {
+            display: block;
+            font-size: .9rem;
+            margin-bottom: 6px;
+            color: #374151;
+        }
+
+        .submit {
+            margin-top: 8px;
+        }
+
+        .submit button {
+            width: 100%;
+            padding: 12px 14px;
+            border: 0;
+            border-radius: 10px;
+            background: #111827;
+            color: #fff;
+            font-weight: 600;
+        }
+
+        .links {
+            margin-top: 12px;
+            font-size: .9rem;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .errorlist {
+            background: #fee2e2;
+            border: 1px solid #fecaca;
+            color: #991b1b;
+            padding: 10px;
+            border-radius: 10px;
+            margin-bottom: 12px;
+        }
+
+        .messages {
+            margin-bottom: 12px;
+        }
+
+        .messages li {
+            background: #eef2ff;
+            border: 1px solid #c7d2fe;
+            color: #3730a3;
+            padding: 10px;
+            border-radius: 10px;
+            margin-bottom: 8px;
+            list-style: none;
+        }
+
+        .notice {
+            background: #ecfeff;
+            border: 1px solid #a5f3fc;
+            color: #075985;
+            padding: 10px 12px;
+            border-radius: 10px;
+            margin: 0 0 14px;
+        }
+
+        .notice.warn {
+            background: #fff7ed;
+            border-color: #fdba74;
+            color: #9a3412;
+        }
+    </style>
+</head>
+<body>
+<div class="wrap">
+    <h1>{% trans "Sign in" %}</h1>
+    <p class="muted">{% trans "Use your school account to continue." %}</p>
+
+    <!--
+    If LOCAL_ACCOUNT_ALLOW_LOGIN = True, users see a friendly tip explaining who should use local login.
+    If it’s False, they get a clear notice that local login is disabled and to use Microsoft SSO.
+    -->
+    {% if LOCAL_ACCOUNT_ALLOW_LOGIN %}
+        <div class="notice">
+            <strong>{% trans "Tip:" %}</strong>
+            {% trans "Staff and students should use Microsoft SSO above. If you were given a local account (e.g., guardians), you may sign in with email/password below." %}
+        </div>
+    {% else %}
+        <div class="notice warn">
+            {% trans "Local email/password sign-in is disabled on this site. Please use Microsoft SSO." %}
+        </div>
+    {% endif %}
+
+
+    {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+                <li>{{ message }}</li>{% endfor %}
+        </ul>
+    {% endif %}
+
+    {# --- Social sign-in buttons --- #}
+    {% get_providers as socialaccount_providers %}
+    {% for provider in socialaccount_providers %}
+        {% if provider.id == "microsoft" %}
+            <a class="btn ms" href="{% provider_login_url 'microsoft' process='login' next=redirect_field_value %}">
+                {% trans "Sign in with Microsoft" %}
+            </a>
+        {% endif %}
+    {% endfor %}
+
+    {% for provider in socialaccount_providers %}
+        {% if provider.id != "microsoft" %}
+            <a class="btn google" href="{% provider_login_url provider.id process='login' next=redirect_field_value %}">
+                {% blocktrans %}Sign in with {{ provider.name }}{% endblocktrans %}
+            </a>
+        {% endif %}
+    {% endfor %}
+
+    {# --- Local email/password ONLY when sign-ups are enabled --- #}
+    {% if LOCAL_ACCOUNT_ALLOW_LOGIN %}
+        <div class="hr"><span>{% trans "or" %}</span></div>
+
+        <form method="post" action="{% url 'account_login' %}">
+            {% csrf_token %}
+            {{ form.non_field_errors }}
+
+            <p>
+                <label for="id_login">{% trans "Email" %}</label>
+                {{ form.login }}
+                {{ form.login.errors }}
+            </p>
+            <p>
+                <label for="id_password">{% trans "Password" %}</label>
+                {{ form.password }}
+                {{ form.password.errors }}
+            </p>
+
+            {% if form.remember %}
+                <p>
+                    <label>{{ form.remember }} {% trans "Remember me" %}</label>
+                    {{ form.remember.errors }}
+                </p>
+            {% endif %}
+
+            {% if redirect_field_value %}
+                <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}"/>
+            {% endif %}
+
+            <div class="submit">
+                <button type="submit">{% trans "Sign in" %}</button>
+            </div>
+
+            <div class="links">
+                <a href="{% url 'account_reset_password' %}">{% trans "Forgot password?" %}</a>
+                {% if LOCAL_ACCOUNT_ALLOW_SIGNUP %}
+                    <a href="{% url 'account_signup' %}">{% trans "Create account" %}</a>
+                {% endif %}
+            </div>
+        </form>
+    {% endif %}
+
+</div>
+</body>
+</html>

@@ -96,11 +96,49 @@ ACCOUNT_LOGIN_METHODS = {"email"}  # only email login
 # Signup form fields — * = required
 ACCOUNT_SIGNUP_FIELDS = ["email*", "password1*", "password2*"]
 
-# Redirect after login
-LOGIN_REDIRECT_URL = "accounts:post_login"
-
 # Custom account adapter for domain rules / SSO mapping
 ACCOUNT_ADAPTER = "accounts.adapters.AccountAdapter"
+
+# Link social logins to pre-synced users + enforce domain allow-list
+SOCIALACCOUNT_ADAPTER = "accounts.adapters.LinkByEmailAdapter"
+
+# Optional: hold your allowed SSO domains in settings (so adapters.py can read it)
+ALLOWED_SSO_DOMAINS = {"bisk.edu.krd", "bis-kurdistan.co.uk"}  # or "bisk.edu.krd,bis-kurdistan.co.uk"
+
+# Microsoft provider: restrict to your tenant (replace with your GUID)
+SOCIALACCOUNT_PROVIDERS = {
+    "microsoft": {
+        # This keeps sign-in limited to your organization
+        "TENANT": "YOUR-TENANT-GUID",
+        # If you store client/secret in the DB via admin, you can omit "APP".
+        # If you prefer settings-based secrets, uncomment and fill:
+        # "APP": {"client_id": "...", "secret": "...", "key": ""},
+    },
+    # You can add Google here later if you want it live now.
+    # "google": { ... }
+}
+
+# (nice to have) send users back somewhere useful after login
+LOGIN_REDIRECT_URL = "accounts:post_login"  # Redirect after login
+LOGIN_URL = "account_login"  # ensures /accounts/login/ is the entry
+
+## single toggle for all social providers
+# SOCIAL_SSO_ALLOW_SIGNUP = False   # set True to allow
+## OR per provider
+SOCIAL_SSO_ALLOW_SIGNUP = {
+    "microsoft": True,
+    "google": False,
+}
+
+# ------------------------
+# Local account sing-up config
+# ------------------------
+# How it behaves now
+#     Set LOCAL_ACCOUNT_ALLOW_LOGIN=True, LOCAL_ACCOUNT_ALLOW_SIGNUP=False:
+#     Users can log in with local credentials, but no sign-up link appears; sign-up is blocked by the adapter.
+#     Keep Azure/SSO users with set_unusable_password() so they naturally use Microsoft; local form won’t work for them.
+LOCAL_ACCOUNT_ALLOW_LOGIN = True  # show local login form
+LOCAL_ACCOUNT_ALLOW_SIGNUP = False  # set True to allow, False to block and hide "Create account" and block sign-up
 
 # ------------------------
 # Axes (optional) config
@@ -134,9 +172,12 @@ TEMPLATES = [
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
-                'django.template.context_processors.request',
+                "django.template.context_processors.debug",
+                'django.template.context_processors.request',  # allauth needs this
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                "accounts.context_processors.ui_flags",
+                # exposes your flags to every template (including LOCAL_ACCOUNT_ALLOW_SIGNUP for the login page).
 
             ],
         },

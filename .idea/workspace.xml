@@ -5,10 +5,19 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2c84581f-bbd6-49c2-b423-8cff6e136ee5" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workflow_automation.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workflow_automation.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/accounts/context_processors.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/accounts/templates/account/login.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/accounts/templates/account/post_login.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/accounts/urls.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/accounts/adapters.py" beforeDir="false" afterPath="$PROJECT_DIR$/accounts/adapters.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/accounts/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/accounts/views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/directory_sync/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/directory_sync/admin.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/directory_sync/management/commands/run_directory_scheduler.py" beforeDir="false" afterPath="$PROJECT_DIR$/directory_sync/management/commands/run_directory_scheduler.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/directory_sync/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/directory_sync/models.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/directory_sync/syncers/azure.py" beforeDir="false" afterPath="$PROJECT_DIR$/directory_sync/syncers/azure.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/workflow_automation/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/workflow_automation/settings.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/workflow_automation/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/workflow_automation/urls.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -31,18 +40,18 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
-  "lastFilter": {
-    "state": "OPEN",
-    "assignee": "anxious01210"
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;anxious01210&quot;
   }
-}]]></component>
-  <component name="GithubPullRequestsUISettings"><![CDATA[{
-  "selectedUrlAndAccountId": {
-    "url": "https://github.com/anxious01210/workflow_automation.git",
-    "accountId": "58ba199c-46e8-4957-90d4-daa478caa7b4"
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/anxious01210/workflow_automation.git&quot;,
+    &quot;accountId&quot;: &quot;58ba199c-46e8-4957-90d4-daa478caa7b4&quot;
   }
-}]]></component>
+}</component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 5
 }</component>
@@ -74,8 +83,10 @@
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_interpreter_path": "C:/Users/MehdiMajid/AppData/Roaming/JetBrains/PyCharm2025.2/node/versions/22.18.0/node",
     "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "junie.application.models",
+    "settings.editor.selected.configurable": "settings.nodejs",
+    "settings.editor.splitter.proportion": "0.13254943",
     "to.speed.mode.migration.done": "true",
     "vue.rearranger.settings.migration": "true"
   },
@@ -148,7 +159,13 @@
       <workItem from="1754664947895" duration="19425000" />
       <workItem from="1754731222313" duration="3984000" />
       <workItem from="1754738290530" duration="23038000" />
-      <workItem from="1754818800925" duration="5781000" />
+      <workItem from="1754818800925" duration="11089000" />
+      <workItem from="1754905188355" duration="21000" />
+      <workItem from="1754906690290" duration="748000" />
+      <workItem from="1754913558677" duration="491000" />
+      <workItem from="1754914065443" duration="43000" />
+      <workItem from="1754989643698" duration="823000" />
+      <workItem from="1754990481319" duration="14857000" />
     </task>
     <servers />
   </component>

@@ -113,8 +113,7 @@ class ExternalDirectory(models.Model):
         blank=True,
         help_text="Most recent error text, if any. Cleared on a successful run."
     )
-    delta_link = models.CharField(
-        max_length=500,
+    delta_link = models.TextField(
         blank=True,
         help_text=(
             "Microsoft Graph delta cursor. Managed automatically; clearing forces a fresh delta crawl."
