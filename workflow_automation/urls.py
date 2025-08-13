@@ -17,6 +17,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
+from accounts.views import PortalEntryView
 from django.conf.urls.static import static
 from wagtail import urls as wagtail_urls
 from wagtail.admin import urls as wagtailadmin_urls
@@ -24,13 +25,19 @@ from wagtail.documents import urls as wagtaildocs_urls
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    # path("accounts/", include("allauth.urls")),
+    # allauth: keep un-namespaced so its internal reverses work
+    path("accounts/", include("allauth.urls")),
+    # path("accounts/", include("accounts.urls", namespace="accounts")),
+    # path("accounts/", include(("accounts.urls", "accounts"), namespace="accounts")),
     path("accounts/", include("accounts.urls", namespace="accounts")),
+
     path('', include('core.urls', namespace='core')),  # Add this
     path("cms/", include(wagtailadmin_urls)),  # editors here
     path("documents/", include(wagtaildocs_urls)),
-    path("portal/", include("portals.urls", namespace="portal")),
-
+    # 👇 exact /portal/ goes to entry router
+    path("portal/", PortalEntryView.as_view(), name="portal"),
+    # 👇 /portal/<something>/ goes to your portals app
+    path("portal/", include("portals.urls", namespace="portals")),
     # Public site (Wagtail handles /)
     path("", include(wagtail_urls)),
 ]

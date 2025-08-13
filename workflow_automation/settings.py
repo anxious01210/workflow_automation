@@ -278,3 +278,22 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # Wagtail
 WAGTAIL_SITE_NAME = "BISK"  # or whatever you want shown in /cms/
 WAGTAILADMIN_BASE_URL = "http://localhost:8000"  # set your real domain in prod
+
+# If you want to change destinations later without editing code.
+# Those keys must match your Group names used as role slugs
+# Your code checks u.groups.filter(name=ROLE_STUDENT). That means the Group names in Django must be exactly:
+#     role_student
+#     role_faculty
+#     role_staff
+#     role_parent
+#     role_external
+# If you created groups like “Students”, “Administration”, etc., these checks won’t match. You’ve got two good options:
+#     Rename the groups in Admin to the slug names above (recommended; keeps code simple), or
+#     Map your human names to slugs in the router (e.g., check both “Students” and role_student). If you prefer this, say the word and I’ll paste a tiny compatibility map so you can keep the friendly names.
+ACCOUNTS_ROLE_REDIRECTS = {
+    "role_student": "student:dashboard",
+    "role_faculty": "faculty:dashboard",
+    "role_staff": "staff:dashboard",
+    "role_parent": "guardian:dashboard",
+    "role_external": "external:dashboard",
+}
