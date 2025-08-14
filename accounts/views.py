@@ -10,13 +10,13 @@ from django.views.generic import TemplateView
 
 from .models import ROLE_STUDENT, ROLE_FACULTY, ROLE_STAFF, ROLE_PARENT, ROLE_EXTERNAL
 
-# Default mapping (override with settings.ACCOUNTS_ROLE_REDIRECTS if you want)
+# (Important!) Default mapping (override with settings.ACCOUNTS_ROLE_REDIRECTS if you want)
 DEFAULT_ROLE_REDIRECTS = {
-    ROLE_STUDENT: "student:dashboard",
-    ROLE_FACULTY: "faculty:dashboard",
-    ROLE_STAFF: "staff:dashboard",
-    ROLE_PARENT: "guardian:dashboard",
-    ROLE_EXTERNAL: "external:dashboard",
+    ROLE_STUDENT: "student:home",
+    ROLE_FACULTY: "faculty:home",
+    ROLE_STAFF: "staff:home",
+    ROLE_PARENT: "guardian:home",
+    ROLE_EXTERNAL: "external:home",
 }
 
 
@@ -41,40 +41,40 @@ class PostLoginRouter(LoginRequiredMixin, View):
     """
     Decide where to send the user right after login based on their role group.
     Priority: student > faculty > staff > guardian > external.
-    Falls back to Admin for staff/superusers, else to a neutral landing page.
+    Admins -> /admin/.
+    If no role match, show a neutral landing page (no redirect loop).
     """
     PRIORITY = [ROLE_STUDENT, ROLE_FACULTY, ROLE_STAFF, ROLE_PARENT, ROLE_EXTERNAL]
 
-    # def get(self, request, *args, **kwargs):
-    #     user = request.user
-    #     role_map = getattr(settings, "ACCOUNTS_ROLE_REDIRECTS", DEFAULT_ROLE_REDIRECTS)
-    #
-    #     # Prefer admin if no role matches for staff/superuser
-    #     admin_url = _reverse_or_none("admin:index")
-    #
-    #     # Role checks in priority order
-    #     for role in self.PRIORITY:
-    #         if user.groups.filter(name=role).exists():
-    #             target_name = role_map.get(role)
-    #             if target_name:
-    #                 url = _reverse_or_none(target_name)
-    #                 if url:
-    #                     return redirect(url)
-    #
-    #     # No explicit role:
-    #     if (user.is_staff or user.is_superuser) and admin_url:
-    #         return redirect(admin_url)
-    #
-    #     # Final fallback: neutral landing page
-    #     landing = _reverse_or_none("accounts:post_login_landing")
-    #     return redirect(landing or "/")
-    # accounts/views.py (only this helper call order changes)
     def get(self, request, *args, **kwargs):
-        post_login = _reverse_any("accounts:post_login", "post_login")
-        if not request.user.is_authenticated:
-            login_url = _reverse_any("account_login", "accounts:account_login")  # plain first
-            return redirect(f"{login_url}?{urlencode({'next': post_login})}")
-        return redirect(post_login)
+        u = request.user
+
+        # Admins straight to admin
+        if u.is_superuser or u.is_staff:
+            return redirect("/admin/")
+
+        # Choose mapping (settings can override the defaults)
+        routes = getattr(settings, "ACCOUNTS_ROLE_REDIRECTS", DEFAULT_ROLE_REDIRECTS)
+
+        # Make one DB call, then check membership in Python
+        user_groups = set(u.groups.values_list("name", flat=True))
+
+        for role in self.PRIORITY:
+            if role in user_groups:
+                urlname = routes.get(role)
+                if urlname:
+                    url = _reverse_or_none(urlname)
+                    if url:
+                        return redirect(url)
+
+        # No role match: go to the neutral landing page (no further redirects)
+        landing = _reverse_or_none("accounts:post_login_landing")
+        if landing:
+            return redirect(landing)
+
+        # Final fallback: render the landing template directly
+        from django.shortcuts import render
+        return render(request, "accounts/post_login.html", {"user": u})
 
 
 class PostLoginView(LoginRequiredMixin, TemplateView):
@@ -82,16 +82,12 @@ class PostLoginView(LoginRequiredMixin, TemplateView):
     template_name = "accounts/post_login.html"
 
 
-class PortalEntryView(View):
-    """
-    /portal/ entry:
-    - Anonymous -> allauth login with next=role router
-    - Authenticated -> role router directly
-    """
-
+class PortalEntryView(LoginRequiredMixin, View):
     def get(self, request, *args, **kwargs):
-        post_login = _reverse_any("accounts:post_login", "post_login")
-        if not request.user.is_authenticated:
-            login_url = _reverse_any("accounts:account_login", "account_login")
-            return redirect(f"{login_url}?{urlencode({'next': post_login})}")
-        return redirect(post_login)
+        user = request.user
+        if user.is_staff or user.is_superuser:
+            return redirect("/admin/")
+        if user.has_perm("portals.portal_access"):
+            return redirect("portals:home")
+        # Fallback if logged-in user lacks portal access:
+        return redirect("account_logout")  # or a safe info page

@@ -68,7 +68,7 @@ class User(AbstractUser):
         self.last_name = (self.last_name or "").strip()
 
     def save(self, *args, **kwargs):
-        self._normalize_fields
+        self._normalize_fields()
         super().save(*args, **kwargs)
 
 

@@ -15,4 +15,5 @@ def set_groups_for_user(user, *, is_student=False, is_faculty=False, is_staff=Fa
     role_groups = Group.objects.filter(name__in=[ROLE_STUDENT, ROLE_FACULTY, ROLE_STAFF, ROLE_PARENT, ROLE_EXTERNAL])
     user.groups.remove(*role_groups)
     for gname in wanted:
-        Group.objects.get(name=gname).user_set.add(user)
+        g, _ = Group.objects.get_or_create(name=gname)
+        g.user_set.add(user)

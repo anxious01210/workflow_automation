@@ -1,13 +1,12 @@
 # portals/urls.py
-from django.urls import path, include
+from django.urls import path
 from . import views
 
-app_name = 'portals'
+app_name = "portals"  # matches project include(namespace="portals")
 
 urlpatterns = [
-    path("student/", include(("portals.student_urls", "student"), namespace="student")),
-    path("faculty/", include(("portals.faculty_urls", "faculty"), namespace="faculty")),
-    path("staff/", include(("portals.staff_urls", "staff"), namespace="staff")),
-    path("guardian/", include(("portals.guardian_urls", "guardian"), namespace="guardian")),
-    path("external/", include(("portals.external_urls", "external"), namespace="external")),
+    path("home/", views.PortalHomeView.as_view(), name="home"),
+    path("appointments/", views.AppointmentsView.as_view(), name="appointments"),
+    path("leave/", views.LeaveView.as_view(), name="leave"),
+    path("purchases/", views.PurchasesView.as_view(), name="purchases"),
 ]

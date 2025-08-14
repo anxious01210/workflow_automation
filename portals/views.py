@@ -1,18 +1,28 @@
 # portals/views.py
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.views.generic import TemplateView
+from django.core.exceptions import PermissionDenied
 
-class StudentDashboardView(LoginRequiredMixin, TemplateView):
-    template_name = "portals/student_dashboard.html"
 
-class FacultyDashboardView(LoginRequiredMixin, TemplateView):
-    template_name = "portals/faculty_dashboard.html"
+class PortalHomeView(LoginRequiredMixin, TemplateView):
+    template_name = "portals/home.html"
 
-class StaffDashboardView(LoginRequiredMixin, TemplateView):
-    template_name = "portals/staff_dashboard.html"
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.has_perm("portals.portal_access"):
+            raise PermissionDenied("You do not have portal access.")
+        return super().dispatch(request, *args, **kwargs)
 
-class GuardianDashboardView(LoginRequiredMixin, TemplateView):
-    template_name = "portals/guardian_dashboard.html"
 
-class ExternalDashboardView(LoginRequiredMixin, TemplateView):
-    template_name = "portals/external_dashboard.html"
+class AppointmentsView(LoginRequiredMixin, PermissionRequiredMixin, TemplateView):
+    permission_required = "portals.appointments_view"
+    template_name = "portals/appointments.html"
+
+
+class LeaveView(LoginRequiredMixin, PermissionRequiredMixin, TemplateView):
+    permission_required = "portals.leave_submit"
+    template_name = "portals/leave.html"
+
+
+class PurchasesView(LoginRequiredMixin, PermissionRequiredMixin, TemplateView):
+    permission_required = "portals.purchase_submit"
+    template_name = "portals/purchases.html"

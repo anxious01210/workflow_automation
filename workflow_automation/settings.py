@@ -24,7 +24,7 @@ SECRET_KEY = 'django-insecure-wpgjlaj=f(wf6mx+4ox&t=3rhy=&6f_38_r#pbz2j+@xk3zp4z
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["localhost",]
 
 # Use your custom user model
 AUTH_USER_MODEL = "accounts.User"
@@ -106,21 +106,40 @@ SOCIALACCOUNT_ADAPTER = "accounts.adapters.LinkByEmailAdapter"
 ALLOWED_SSO_DOMAINS = {"bisk.edu.krd", "bis-kurdistan.co.uk"}  # or "bisk.edu.krd,bis-kurdistan.co.uk"
 
 # Microsoft provider: restrict to your tenant (replace with your GUID)
+# SOCIALACCOUNT_PROVIDERS = {
+#     # "microsoft": {
+#     #     # This keeps sign-in limited to your organization
+#     #     "TENANT": "YOUR-TENANT-GUID",
+#     #     # If you store client/secret in the DB via admin, you can omit "APP".
+#     #     # If you prefer settings-based secrets, uncomment and fill:
+#     #     # "APP": {"client_id": "...", "secret": "...", "key": ""},
+#     # },
+#     # You can add Google here later if you want it live now.
+#     # "google": { ... }
+# }
+# Tell allauth to use YOUR tenant (not /common)
 SOCIALACCOUNT_PROVIDERS = {
     "microsoft": {
-        # This keeps sign-in limited to your organization
-        "TENANT": "YOUR-TENANT-GUID",
-        # If you store client/secret in the DB via admin, you can omit "APP".
-        # If you prefer settings-based secrets, uncomment and fill:
-        # "APP": {"client_id": "...", "secret": "...", "key": ""},
-    },
-    # You can add Google here later if you want it live now.
-    # "google": { ... }
+        # Use lowercase 'tenant' (new allauth). Keep both keys to be safe.
+        "tenant": "a900c69a-f53a-41cf-bf7d-e85abff49c35",
+        "TENANT": "a900c69a-f53a-41cf-bf7d-e85abff49c35",
+
+        # Optional but fine to keep:
+        "SCOPE": ["openid", "email", "profile", "offline_access", "User.Read"],
+        # Do NOT set "APP" here since you’re using the SocialApp in admin.
+    }
 }
 
-# (nice to have) send users back somewhere useful after login
-LOGIN_REDIRECT_URL = "accounts:post_login"  # Redirect after login
-LOGIN_URL = "account_login"  # ensures /accounts/login/ is the entry
+# Always send users here after any successful login
+LOGIN_REDIRECT_URL = "/accounts/post-login/"
+ACCOUNT_LOGIN_REDIRECT_URL = LOGIN_REDIRECT_URL  # allauth
+
+# Where to send users after logout – not post-login, to avoid loops
+LOGOUT_REDIRECT_URL = "/"
+ACCOUNT_LOGOUT_REDIRECT_URL = LOGOUT_REDIRECT_URL
+
+# Explicit login URL (used by @login_required)
+LOGIN_URL = "/accounts/login/"
 
 ## single toggle for all social providers
 # SOCIAL_SSO_ALLOW_SIGNUP = False   # set True to allow
@@ -143,7 +162,7 @@ LOCAL_ACCOUNT_ALLOW_SIGNUP = False  # set True to allow, False to block and hide
 # ------------------------
 # Axes (optional) config
 # ------------------------
-AXES_FAILURE_LIMIT = 5
+AXES_FAILURE_LIMIT = 15
 AXES_COOLOFF_TIME = 1  # hours
 AXES_LOCKOUT_CALLABLE = None  # custom hook if needed
 
@@ -178,11 +197,15 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
                 "accounts.context_processors.ui_flags",
                 # exposes your flags to every template (including LOCAL_ACCOUNT_ALLOW_SIGNUP for the login page).
-
+                "portals.context_processors.portal_menu",
             ],
         },
     },
 ]
+
+# TEMPLATES[0]["OPTIONS"]["context_processors"] += [
+#     "portals.context_processors.portal_menu",
+# ]
 
 WSGI_APPLICATION = 'workflow_automation.wsgi.application'
 
@@ -291,9 +314,15 @@ WAGTAILADMIN_BASE_URL = "http://localhost:8000"  # set your real domain in prod
 #     Rename the groups in Admin to the slug names above (recommended; keeps code simple), or
 #     Map your human names to slugs in the router (e.g., check both “Students” and role_student). If you prefer this, say the word and I’ll paste a tiny compatibility map so you can keep the friendly names.
 ACCOUNTS_ROLE_REDIRECTS = {
-    "role_student": "student:dashboard",
-    "role_faculty": "faculty:dashboard",
-    "role_staff": "staff:dashboard",
-    "role_parent": "guardian:dashboard",
-    "role_external": "external:dashboard",
+    "role_student": "student:home",
+    "role_faculty": "faculty:home",
+    "role_staff": "staff:home",
+    "role_parent": "guardian:home",
+    "role_external": "external:home",
+}
+
+# Optional flags per deployment:
+PORTAL_FEATURE_FLAGS = {
+    # "appointments": True,
+    # "purchases": False,
 }

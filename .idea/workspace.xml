@@ -5,22 +5,24 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2c84581f-bbd6-49c2-b423-8cff6e136ee5" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/portals/external_urls.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/portals/faculty_urls.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/portals/guardian_urls.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/portals/staff_urls.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/portals/student_urls.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/portals/templates/portals/_base_portal.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/portals/templates/portals/external_dashboard.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/portals/templates/portals/faculty_dashboard.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/portals/templates/portals/guardian_dashboard.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/portals/templates/portals/staff_dashboard.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/portals/templates/portals/student_dashboard.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/portals/context_processors.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/portals/management/commands/sync_roles.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/portals/portal_features.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/portals/registry.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/portals/roles.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/portals/templates/portals/appointments.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/portals/templates/portals/base.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/portals/templates/portals/home.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/portals/templates/portals/leave.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/portals/templates/portals/purchases.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/portals/templatetags/portal_extras.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/accounts/templates/account/login.html" beforeDir="false" afterPath="$PROJECT_DIR$/accounts/templates/accounts/login.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/accounts/templates/account/post_login.html" beforeDir="false" afterPath="$PROJECT_DIR$/accounts/templates/accounts/post_login.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/accounts/management/commands/ensure_role_groups.py" beforeDir="false" afterPath="$PROJECT_DIR$/accounts/management/commands/ensure_role_groups.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/accounts/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/accounts/models.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/accounts/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/accounts/urls.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/accounts/utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/accounts/utils.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/accounts/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/accounts/views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/portals/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/portals/models.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/portals/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/portals/urls.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/portals/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/portals/views.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/workflow_automation/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/workflow_automation/settings.py" afterDir="false" />
@@ -39,8 +41,8 @@
       <list>
         <option value="CSS File" />
         <option value="JavaScript File" />
-        <option value="Python Script" />
         <option value="HTML File" />
+        <option value="Python Script" />
       </list>
     </option>
   </component>
@@ -70,39 +72,39 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "DefaultHtmlFileTemplate": "HTML File",
-    "Django Server.workflow_automation.executor": "Run",
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "RunOnceActivity.OpenDjangoStructureViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "RunOnceActivity.pycharm.django.structure.promotion.once.per.project": "true",
-    "django.template.preview.state": "SHOW_EDITOR",
-    "git-widget-placeholder": "main",
-    "ignore.virus.scanning.warn.message": "true",
-    "junie.onboarding.icon.badge.shown": "true",
-    "last_opened_file_path": "/home/rio/PycharmProjects/workflow_automation/core/templates/core",
-    "list.type.of.created.stylesheet": "CSS",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_interpreter_path": "C:/Users/MehdiMajid/AppData/Roaming/JetBrains/PyCharm2025.2/node/versions/22.18.0/node",
-    "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "settings.nodejs",
-    "settings.editor.splitter.proportion": "0.13254943",
-    "to.speed.mode.migration.done": "true",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;DefaultHtmlFileTemplate&quot;: &quot;HTML File&quot;,
+    &quot;Django Server.workflow_automation.executor&quot;: &quot;Run&quot;,
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.OpenDjangoStructureViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.pycharm.django.structure.promotion.once.per.project&quot;: &quot;true&quot;,
+    &quot;django.template.preview.state&quot;: &quot;SHOW_EDITOR&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/home/rio/PycharmProjects/workflow_automation/core/templates/core&quot;,
+    &quot;list.type.of.created.stylesheet&quot;: &quot;CSS&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_interpreter_path&quot;: &quot;C:/Users/MehdiMajid/AppData/Roaming/JetBrains/PyCharm2025.2/node/versions/22.18.0/node&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;settings.nodejs&quot;,
+    &quot;settings.editor.splitter.proportion&quot;: &quot;0.13254943&quot;,
+    &quot;to.speed.mode.migration.done&quot;: &quot;true&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   },
-  "keyToStringList": {
-    "DatabaseDriversLRU": [
-      "sqlite"
+  &quot;keyToStringList&quot;: {
+    &quot;DatabaseDriversLRU&quot;: [
+      &quot;sqlite&quot;
     ]
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/core/templates/core" />
@@ -144,8 +146,8 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-js-predefined-d6986cc7102b-e03c56caf84a-JavaScript-PY-252.23892.439" />
-        <option value="bundled-python-sdk-b3ae9b5d7125-f0eec537fc84-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-252.23892.439" />
+        <option value="bundled-js-predefined-d6986cc7102b-e03c56caf84a-JavaScript-PY-252.23892.515" />
+        <option value="bundled-python-sdk-7e47963ff851-f0eec537fc84-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-252.23892.515" />
       </set>
     </attachedChunks>
   </component>
@@ -172,7 +174,9 @@
       <workItem from="1754913558677" duration="491000" />
       <workItem from="1754914065443" duration="43000" />
       <workItem from="1754989643698" duration="823000" />
-      <workItem from="1754990481319" duration="26915000" />
+      <workItem from="1754990481319" duration="31833000" />
+      <workItem from="1755149157477" duration="1004000" />
+      <workItem from="1755150576348" duration="16519000" />
     </task>
     <servers />
   </component>

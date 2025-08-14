@@ -50,3 +50,8 @@ if settings.DEBUG:
 admin.site.site_title = "BISK Admin Portal"
 admin.site.site_header = "Welcome to BISK Admin Area"
 admin.site.index_title = "Dashboard Overview"
+
+
+# Public site: / (Wagtail pages, blog, jobs).
+# Portal: /portal/ (auth-gated).
+# Django admin: /admin/ (staff only).
